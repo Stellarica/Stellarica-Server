@@ -19,13 +19,17 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "server": {
+      "server_init": {
         "adapter": "kotlin",
         "value": "io.github.hydrazinemc.hzmod.server.Server"
       },
-      "client": {
+      "client_init": {
         "adapter": "kotlin",
         "value": "io.github.hydrazinemc.hzmod.client.Client"
+      },
+      "init": {
+        "adapter": "kotlin",
+        "value": "io.github.hydrazinemc.hzmod.Hydrazine"
       }
     },
     "depends": [

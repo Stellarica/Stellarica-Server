@@ -2,10 +2,12 @@
 # The latest versions are available at https://lambdaurora.dev/tools/import_quilt.html
 minecraft = "1.19.3"
 quilt_mappings = "1.19.3+build.12"
-quilt_loader = "0.17.8"
+quilt_loader = "0.18.1-beta.26"
 
 quilted_fabric_api = "5.0.0-alpha.7+0.70.0-1.19.3"
 quilt_kotlin = "1.0.1+kt.1.7.22+flk.1.8.6"
+
+polymer = "0.3.4+1.19.3"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -16,10 +18,14 @@ quilted_fabric_api = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-a
 quilted_fabric_api_deprecated = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api-deprecated", version.ref = "quilted_fabric_api" }
 quilt_kotlin = { module = "org.quiltmc.quilt-kotlin-libraries:quilt-kotlin-libraries", version.ref = "quilt_kotlin" }
 
+polymer_core = { module = "eu.pb4:polymer-core", version.ref = "polymer" }
+polymer_resource_pack = { module = "eu.pb4:polymer-resource-pack", version.ref = "polymer" }
+polymer_blocks = { module = "eu.pb4:polymer-blocks", version.ref = "polymer" }
 
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]
 quilted_fabric_api = ["quilted_fabric_api", "quilted_fabric_api_deprecated"]
+polymer = ["polymer_core", "polymer_resource_pack", "polymer_blocks"]
 
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.0.+" }

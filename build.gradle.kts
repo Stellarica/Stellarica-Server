@@ -12,6 +12,7 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	maven("https://maven.nucleoid.xyz") // polymer
 }
 
 dependencies {
@@ -20,6 +21,8 @@ dependencies {
 	modImplementation(libs.quilt.loader)
 	modImplementation(libs.quilted.fabric.api)
 	modImplementation(libs.quilt.kotlin)
+	modImplementation(libs.bundles.polymer)
+	include(libs.bundles.polymer)
 }
 
 tasks {

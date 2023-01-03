@@ -6,7 +6,6 @@
   "mixins": [
   ],
   "client": [
-    "io.github.hydrazinemc.hzmod.mixin.ExampleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

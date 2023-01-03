@@ -4,6 +4,9 @@ import eu.pb4.polymer.blocks.api.BlockModelType
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils
 import io.github.hydrazinemc.hzmod.util.SimpleBlock
 import io.github.hydrazinemc.hzmod.util.SimpleBlockItem
+import net.benwoodworth.knbt.Nbt
+import net.benwoodworth.knbt.NbtCompression
+import net.benwoodworth.knbt.NbtVariant
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item

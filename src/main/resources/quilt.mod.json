@@ -26,7 +26,16 @@
       "init": {
         "adapter": "kotlin",
         "value": "io.github.hydrazinemc.hzmod.Hydrazine"
+      },
+      "cardinal-components": {
+        "adapter": "kotlin",
+        "value": "io.github.hydrazinemc.hzmod.Components"
       }
+    },
+    "custom": {
+      "cardinal-components": [
+        "hydrazine:multiblocks"
+      ]
     },
     "depends": [
       {

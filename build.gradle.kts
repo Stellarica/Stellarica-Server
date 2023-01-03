@@ -1,5 +1,6 @@
 plugins {
 	kotlin("jvm") version "1.8.0"
+	kotlin("plugin.serialization") version "1.8.0"
 	java
 	alias(libs.plugins.quilt.loom)
 }
@@ -41,7 +42,6 @@ tasks {
 	compileKotlin {
 		kotlinOptions.jvmTarget = "17"
 	}
-
 }
 
 java {

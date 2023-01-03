@@ -32,11 +32,6 @@
         "value": "io.github.hydrazinemc.hzmod.Components"
       }
     },
-    "custom": {
-      "cardinal-components": [
-        "hydrazine:multiblocks"
-      ]
-    },
     "depends": [
       {
         "id": "quilt_loader",
@@ -56,5 +51,8 @@
       }
     ]
   },
+  "cardinal-components": [
+    "hydrazine:multiblocks"
+  ],
   "mixin": "hydrazine.mixins.json"
 }

@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "hydrazine:test_block"
+          "name": "hydrazine:item/test_block"
         }
       ],
       "conditions": [

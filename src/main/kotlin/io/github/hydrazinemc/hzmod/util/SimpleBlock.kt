@@ -8,7 +8,7 @@ import io.github.hydrazinemc.hzmod.Hydrazine
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 
-class SimpleBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : Block(settings),
+open class SimpleBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : Block(settings),
 	PolymerTexturedBlock {
 	private val polymerBlockState = PolymerBlockResourceUtils.requestBlock(
 		type,

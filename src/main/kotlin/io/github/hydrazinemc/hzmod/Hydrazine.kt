@@ -4,9 +4,10 @@ import eu.pb4.polymer.blocks.api.BlockModelType
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils
 import io.github.hydrazinemc.hzmod.util.SimpleBlock
 import io.github.hydrazinemc.hzmod.util.SimpleBlockItem
-import net.benwoodworth.knbt.Nbt
-import net.benwoodworth.knbt.NbtCompression
-import net.benwoodworth.knbt.NbtVariant
+import io.github.hydrazinemc.hzmod.block.InterfaceBlock
+import io.github.hydrazinemc.hzmod.multiblocks.MultiblockHandler
+import io.github.hydrazinemc.hzmod.multiblocks.MultiblockType
+import io.github.hydrazinemc.hzmod.multiblocks.OriginRelative
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
@@ -30,22 +31,48 @@ class Hydrazine: ModInitializer {
 	override fun onInitialize(mod: ModContainer?) {
 		PolymerResourcePackUtils.markAsRequired()
 		PolymerResourcePackUtils.addModAssets(MODID)
-		registerSimpleBlock(BlockModelType.FULL_BLOCK, "block/test_block");
+		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "block/test_block")
+
+
+		// todo: temporary code
+		val inter = Registry.register(
+			Registries.BLOCK,
+			identifier("interface_block"),
+			InterfaceBlock(
+				QuiltBlockSettings.copy(Blocks.IRON_BLOCK),
+				BlockModelType.FULL_BLOCK,
+				"block/interface_block"
+			)
+		)
+		registerSimpleBlockItem(inter, "block/interface_block")
+		MultiblockHandler.types.add(MultiblockType(
+			identifier("test_multiblock"),
+			mapOf(
+				OriginRelative(0,-1,0) to Blocks.IRON_BLOCK,
+				OriginRelative(1, 0, 0) to Blocks.REDSTONE_BLOCK
+			)
+		))
 	}
 
-	fun registerSimpleBlock(type: BlockModelType?, modelId: String?): Pair<Block, Item> {
+	fun registerSimpleBlockItemPair(type: BlockModelType?, modelId: String?): Pair<Block, Item> {
 		val id = identifier(modelId)
 		val block = Registry.register(
 			Registries.BLOCK,
 			id,
 			SimpleBlock(QuiltBlockSettings.copy(Blocks.DIAMOND_BLOCK), type, modelId)
 		)
+		val item = registerSimpleBlockItem(block, modelId)
+		return Pair(block, item)
+	}
+
+	fun registerSimpleBlockItem(block: Block, modelId: String?): Item {
+		val id = identifier(modelId)
 		val item = Registry.register<Item, Item>(
 			Registries.ITEM,
 			id,
 			SimpleBlockItem(QuiltItemSettings(), block, modelId)
 		)
-		return Pair(block, item)
+		return item
 	}
 }
 

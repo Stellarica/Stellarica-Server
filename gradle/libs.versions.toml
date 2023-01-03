@@ -8,6 +8,7 @@ quilted_fabric_api = "5.0.0-alpha.7+0.70.0-1.19.3"
 quilt_kotlin = "1.0.1+kt.1.7.22+flk.1.8.6"
 
 polymer = "0.3.4+1.19.3"
+cardinal = "5.1.0"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -22,10 +23,14 @@ polymer_core = { module = "eu.pb4:polymer-core", version.ref = "polymer" }
 polymer_resource_pack = { module = "eu.pb4:polymer-resource-pack", version.ref = "polymer" }
 polymer_blocks = { module = "eu.pb4:polymer-blocks", version.ref = "polymer" }
 
+cardinal_base = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-base", version.ref = "cardinal" }
+cardinal_chunk = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk", version.ref = "cardinal" }
+
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]
 quilted_fabric_api = ["quilted_fabric_api", "quilted_fabric_api_deprecated"]
 polymer = ["polymer_core", "polymer_resource_pack", "polymer_blocks"]
+cardinal = ["cardinal_base", "cardinal_chunk"]
 
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.0.+" }

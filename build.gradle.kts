@@ -7,12 +7,8 @@ group = property("maven_group")!!
 version = property("version")!!
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
 	maven("https://maven.nucleoid.xyz") // polymer
+	maven("https://ladysnake.jfrog.io/artifactory/mods") // cardinal components
 }
 
 dependencies {
@@ -21,8 +17,12 @@ dependencies {
 	modImplementation(libs.quilt.loader)
 	modImplementation(libs.quilted.fabric.api)
 	modImplementation(libs.quilt.kotlin)
+
 	modImplementation(libs.bundles.polymer)
 	include(libs.bundles.polymer)
+
+	modImplementation(libs.bundles.cardinal)
+	include(libs.bundles.cardinal)
 }
 
 tasks {
@@ -45,11 +45,5 @@ tasks {
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 }
-
-
-// configure the maven publication

@@ -4,6 +4,7 @@ import eu.pb4.polymer.blocks.api.BlockModelType
 import io.github.hydrazinemc.hzmod.Components.Companion.MULTIBLOCKS
 import io.github.hydrazinemc.hzmod.multiblocks.MultiblockHandler
 import io.github.hydrazinemc.hzmod.util.SimpleBlock
+import io.github.hydrazinemc.hzmod.util.sendMiniMessage
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.text.Text
@@ -27,14 +28,14 @@ class InterfaceBlock(settings: Settings?, type: BlockModelType?, modelId: String
 	): ActionResult {
 		// todo: this is jank
 		MULTIBLOCKS.get(world!!.getChunk(pos)).multiblocks.firstOrNull { it.origin == pos }?.let {
-			player!!.sendMessage(Text.literal("${it.type.id} is already detected"), true)
+			player!!.sendMiniMessage("<gold>${it.type.id} is already detected", true)
 			return ActionResult.SUCCESS
 		}
 		val mb = MultiblockHandler.detect(pos!!, world)
 		if (mb != null) {
-			player!!.sendMessage(Text.literal("Detected ${mb.type.id}"), true)
+			player!!.sendMiniMessage("<green>Detected ${mb.type.id}", true)
 		} else {
-			player!!.sendMessage(Text.literal("No multiblock detected"), true)
+			player!!.sendMiniMessage("<red>No multiblock detected", true)
 		}
 		return ActionResult.SUCCESS
 	}

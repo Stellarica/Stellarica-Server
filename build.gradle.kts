@@ -8,6 +8,7 @@ group = property("maven_group")!!
 version = property("version")!!
 
 repositories {
+	maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") // minimessage
 	maven("https://maven.nucleoid.xyz") // polymer
 	maven("https://ladysnake.jfrog.io/artifactory/mods") // cardinal components
 }
@@ -24,6 +25,11 @@ dependencies {
 
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
+
+	modImplementation(libs.bundles.adventure)
+	include(libs.bundles.adventure)
+
+	implementation(libs.kotlin.coroutines)
 }
 
 tasks {

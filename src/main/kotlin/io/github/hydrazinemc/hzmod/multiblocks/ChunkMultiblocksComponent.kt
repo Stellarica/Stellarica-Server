@@ -33,6 +33,7 @@ class ChunkMultiblocksComponent(private val chunk: Chunk): ServerTickingComponen
 	override fun readFromNbt(tag: NbtCompound) {
 		// read multiblocks from tag
 		// todo: don't use a string in the nbt, better to just serialize to nbt
+		if (tag.getString("multiblocks") == "") return
 		val world = (chunk as WorldChunk).world
 		multiblocks.addAll(Json.decodeFromString<Set<MultiblockData>>(tag.getString("multiblocks")).map { it.toInstance(world) }.toMutableSet())
 	}

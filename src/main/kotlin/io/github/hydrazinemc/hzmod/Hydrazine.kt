@@ -5,6 +5,7 @@ import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils
 import io.github.hydrazinemc.hzmod.util.SimpleBlock
 import io.github.hydrazinemc.hzmod.util.SimpleBlockItem
 import io.github.hydrazinemc.hzmod.block.InterfaceBlock
+import io.github.hydrazinemc.hzmod.block.ShipBlock
 import io.github.hydrazinemc.hzmod.multiblocks.MultiblockHandler
 import io.github.hydrazinemc.hzmod.multiblocks.MultiblockType
 import io.github.hydrazinemc.hzmod.multiblocks.OriginRelative
@@ -45,6 +46,16 @@ class Hydrazine: ModInitializer {
 			)
 		)
 		registerSimpleBlockItem(inter, "block/interface_block")
+		val ship = Registry.register(
+			Registries.BLOCK,
+			identifier("ship_block"),
+			ShipBlock(
+				QuiltBlockSettings.copy(Blocks.IRON_BLOCK),
+				BlockModelType.FULL_BLOCK,
+				"block/ship_block"
+			)
+		)
+		registerSimpleBlockItem(ship, "block/ship_block")
 		MultiblockHandler.types.add(MultiblockType(
 			identifier("test_multiblock"),
 			mapOf(

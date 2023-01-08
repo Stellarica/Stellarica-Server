@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hzmod.crafts
 
 import io.github.hydrazinemc.hzmod.Components.Companion.MULTIBLOCKS
+import io.github.hydrazinemc.hzmod.mixin.BlockEntityMixin
 import io.github.hydrazinemc.hzmod.multiblocks.MultiblockInstance
 import io.github.hydrazinemc.hzmod.multiblocks.OriginRelative
 import io.github.hydrazinemc.hzmod.util.asDegrees
@@ -21,13 +22,18 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.ChunkSection
 import net.minecraft.world.chunk.WorldChunk
 import org.quiltmc.qkl.library.math.toBlockPos
 import org.quiltmc.qkl.library.math.toVec3d
+import org.quiltmc.qkl.library.math.toVec3i
+import org.quiltmc.qkl.library.recipe.coerceIngredient
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.system.measureTimeMillis
 
 class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity) {
@@ -232,6 +238,60 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 		val blocksToSet = ConcurrentHashMap<BlockPos, BlockState>()
 		var collision: BlockPos? = null
 
+		val cachedBlockData = ConcurrentHashMap<BlockPos, BlockState>()
+
+		// oh no
+		// this is bad
+		var min = Vec3i(
+			detectedBlocks.minBy { it.x }.x,
+			detectedBlocks.minBy { it.y }.y,
+			detectedBlocks.minBy { it.z }.z
+		)
+		var max = Vec3i(
+			detectedBlocks.maxBy { it.x }.x,
+			detectedBlocks.maxBy { it.y }.y,
+			detectedBlocks.maxBy { it.z }.z
+		)
+
+		// I hate this
+		for (x in min.x..max.x)
+			for (z in min.z..max.z)
+				for (y in min.y..max.y) {
+					val pos = BlockPos(x,y,z)
+					cachedBlockData[pos] = world.getBlockState(pos)
+				}
+
+		// end me already
+		if (rotation == BlockRotation.COUNTERCLOCKWISE_90 || rotation == BlockRotation.CLOCKWISE_90) {
+			min = rotateCoordinates(modifier(min.toVec3d()), modifier(origin.toVec3d()), rotation).toVec3i().let {
+				Vec3i(
+					it.z,
+					it.y,
+					it.x
+				)
+			}
+			max = rotateCoordinates(modifier(max.toVec3d()), modifier(origin.toVec3d()), rotation).toVec3i().let {
+				Vec3i(
+					it.z,
+					it.y,
+					it.x
+				)
+			}
+		} else {
+			min = modifier(min.toVec3d()).toVec3i()
+			max = modifier(max.toVec3d()).toVec3i()
+		}
+
+		// this is terrible
+		for (x in min(min.x,max.x)..max(min.x, max.x))
+			for (z in min(min.z,max.z)..max(min.z, max.z))
+				for (y in min(min.y,max.y)..max(min.y, max.y)) {
+					val pos = BlockPos(x,y,z)
+					cachedBlockData[pos] = world.getBlockState(pos)
+				}
+
+		// phew! escaped!
+		// oh wait, this isn't really any better
 		// calculate blocks to set and find entities to move
 		runBlocking {
 			val jobs = mutableListOf<Job>()
@@ -241,9 +301,11 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 					// calculate new position and state for each block in this section
 					section.forEach { current ->
 						val target = modifier(current.toVec3d()).toBlockPos()
-						if (!detectedBlocks.contains(target) && world.getBlockState(target).block != Blocks.AIR)
-							collision = target
-						val currentBlock = world.getBlockState(current)
+						if (!detectedBlocks.contains(target) && !cachedBlockData[target]!!.isAir) {
+							collision = target // hit something, so we shouldn't actually move any blocks
+							println("collision: ${cachedBlockData[target]}, $target")
+						}
+						val currentBlock = cachedBlockData[current]!!
 						blocksToSet.putIfAbsent(current, Blocks.AIR.defaultState)
 						blocksToSet[target] = currentBlock.rotate(rotation)
 						if (currentBlock.hasBlockEntity()) {
@@ -252,26 +314,32 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 					}
 				})
 			}
-			jobs.forEach { it.join() } // there's probably a better way to do this
 		}
+		println("not blocking any more")
 		// check for collision
 		if (collision != null) {
 			sendMiniMessage("<gold>Blocked by ${world.getBlockState(collision!!).block.name} at <bold>(${collision!!.x}, ${collision!!.y}, ${collision!!.z}</bold>)!\"")
 			return
 		}
+		detectedBlocks.clear()
 		// move blocks
-		blocksToSet.forEach { setBlockFast(it.key, it.value, targetWorld) } // todo: only set to target world if its a new block. if its air we want the old world
+		blocksToSet.forEach {
+			// todo: only set to target world if its a new block. if its air we want the old world
+			setBlockFast(it.key, it.value, targetWorld)
+			if (!it.value.isAir) { // this is kind of a bad fix, maybe there's a better way?
+				detectedBlocks.add(it.key)
+			}
+		}
 
 		// move entities
 		movePassengers(modifier, rotation)
 		entities.forEach { (from, to) ->
 			val entity = world.getBlockEntity(from) ?: return@forEach
-			entity::class.java.getDeclaredField("pos").set(entity, to)
+			(entity as BlockEntityMixin).setPos(to)
 			entity.world = targetWorld
 			entity.markDirty()
 			world.getChunk(to).setBlockEntity(entity)
 		}
-
 		// move multiblocks
 		multiblocks.map {
 			val mb = it.get() ?: return@map null
@@ -282,5 +350,7 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 		}
 
 		world = targetWorld
+		origin = modifier(origin.toVec3d()).toBlockPos()
+		callback()
 	}
 }

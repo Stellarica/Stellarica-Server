@@ -45,7 +45,7 @@ class Hydrazine: ModInitializer {
 				"block/interface_block"
 			)
 		)
-		registerSimpleBlockItem(inter, "block/interface_block")
+		registerSimpleBlockItem(inter, "interface_block")
 		val ship = Registry.register(
 			Registries.BLOCK,
 			identifier("ship_block"),
@@ -55,7 +55,7 @@ class Hydrazine: ModInitializer {
 				"block/ship_block"
 			)
 		)
-		registerSimpleBlockItem(ship, "block/ship_block")
+		registerSimpleBlockItem(ship, "ship_block")
 		MultiblockHandler.types.add(MultiblockType(
 			identifier("test_multiblock"),
 			mapOf(
@@ -63,25 +63,34 @@ class Hydrazine: ModInitializer {
 				OriginRelative(1, 0, 0) to Blocks.REDSTONE_BLOCK
 			)
 		))
+
+
+		// temporary code, but don't remove these blocks
+		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "adamantite_block")
+		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "iridium_block")
+		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "steel_block")
+		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "palladium_block")
+		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "titanium_block")
+		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "tungsten_block")
 	}
 
-	fun registerSimpleBlockItemPair(type: BlockModelType?, modelId: String?): Pair<Block, Item> {
-		val id = identifier(modelId)
+	fun registerSimpleBlockItemPair(type: BlockModelType?, id: String?): Pair<Block, Item> {
+		val ident = identifier(id)
 		val block = Registry.register(
 			Registries.BLOCK,
-			id,
-			SimpleBlock(QuiltBlockSettings.copy(Blocks.DIAMOND_BLOCK), type, modelId)
+			ident,
+			SimpleBlock(QuiltBlockSettings.copy(Blocks.DIAMOND_BLOCK), type, "block/$id")
 		)
-		val item = registerSimpleBlockItem(block, modelId)
+		val item = registerSimpleBlockItem(block, id)
 		return Pair(block, item)
 	}
 
-	fun registerSimpleBlockItem(block: Block, modelId: String?): Item {
-		val id = identifier(modelId)
+	fun registerSimpleBlockItem(block: Block, id: String?): Item {
+		val ident = identifier(id)
 		val item = Registry.register<Item, Item>(
 			Registries.ITEM,
-			id,
-			SimpleBlockItem(QuiltItemSettings(), block, modelId)
+			ident,
+			SimpleBlockItem(QuiltItemSettings(), block, "block/$id")
 		)
 		return item
 	}

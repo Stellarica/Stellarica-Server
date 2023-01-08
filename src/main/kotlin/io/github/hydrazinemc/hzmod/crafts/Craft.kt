@@ -157,7 +157,7 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
-				if (rotation != BlockRotation.NONE) rotateCoordinates(
+				if (rotation == BlockRotation.CLOCKWISE_90 || rotation == BlockRotation.COUNTERCLOCKWISE_90) rotateCoordinates(
 					it.pos,
 					Vec3d(
 						0.5,
@@ -167,7 +167,6 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 					rotation
 				)
 				else offset(it.pos)
-
 			// todo: handle teleporting to a different world
 			if (it is ServerPlayerEntity) {
 				it.networkHandler.requestTeleport(destination.x, destination.y, destination.z, it.yaw + rotation.asDegrees.toFloat(), it.pitch, Flag.ALL_FLAGS, true)
@@ -209,10 +208,15 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 	 * Translate the craft by [offset] blocks
 	 * @see queueChange
 	 */
-	fun move(offset: Vec3d) {
+	fun move(offset: Vec3i) {
+		val change = offset.toVec3d()
+		// don't want to let them pass a vec3d
+		// since the ships snap to blocks but entities can actually move by that much
+		// relative entity teleportation will be messed up
+
 		change({ current ->
-			return@change current.add(offset)
-		}, "Movement", world)
+			return@change current.add(change)
+		}, world)
 	}
 
 	/**
@@ -222,124 +226,63 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 	fun rotate(rotation: BlockRotation) {
 		change({ current ->
 			return@change rotateCoordinates(current, origin.toVec3d(), rotation)
-		}, "Rotation", world, rotation) {
+		}, world, rotation) {
 			calculateHitbox() // rather than keep track of a hitbox rotation, just recacluate it when we rotate.
 		}
 	}
 
 	private fun change(
 		modifier: (Vec3d) -> Vec3d,
-		name: String,
 		targetWorld: ServerWorld,
 		rotation: BlockRotation = BlockRotation.NONE,
 		callback: () -> Unit = {}
 	) {
-		val entities = ConcurrentHashMap<BlockPos, BlockPos>()
-		val blocksToSet = ConcurrentHashMap<BlockPos, BlockState>()
-		var collision: BlockPos? = null
-
-		val cachedBlockData = ConcurrentHashMap<BlockPos, BlockState>()
-
-		// oh no
-		// this is bad
-		var min = Vec3i(
-			detectedBlocks.minBy { it.x }.x,
-			detectedBlocks.minBy { it.y }.y,
-			detectedBlocks.minBy { it.z }.z
-		)
-		var max = Vec3i(
-			detectedBlocks.maxBy { it.x }.x,
-			detectedBlocks.maxBy { it.y }.y,
-			detectedBlocks.maxBy { it.z }.z
-		)
-
-		// I hate this
-		for (x in min.x..max.x)
-			for (z in min.z..max.z)
-				for (y in min.y..max.y) {
-					val pos = BlockPos(x,y,z)
-					cachedBlockData[pos] = world.getBlockState(pos)
-				}
-
-		// end me already
-		if (rotation == BlockRotation.COUNTERCLOCKWISE_90 || rotation == BlockRotation.CLOCKWISE_90) {
-			min = rotateCoordinates(modifier(min.toVec3d()), modifier(origin.toVec3d()), rotation).toVec3i().let {
-				Vec3i(
-					it.z,
-					it.y,
-					it.x
-				)
-			}
-			max = rotateCoordinates(modifier(max.toVec3d()), modifier(origin.toVec3d()), rotation).toVec3i().let {
-				Vec3i(
-					it.z,
-					it.y,
-					it.x
-				)
-			}
-		} else {
-			min = modifier(min.toVec3d()).toVec3i()
-			max = modifier(max.toVec3d()).toVec3i()
-		}
-
-		// this is terrible
-		for (x in min(min.x,max.x)..max(min.x, max.x))
-			for (z in min(min.z,max.z)..max(min.z, max.z))
-				for (y in min(min.y,max.y)..max(min.y, max.y)) {
-					val pos = BlockPos(x,y,z)
-					cachedBlockData[pos] = world.getBlockState(pos)
-				}
-
-		// phew! escaped!
-		// oh wait, this isn't really any better
-		// calculate blocks to set and find entities to move
+		val targets = ConcurrentHashMap<BlockPos, BlockPos>()
 		runBlocking {
-			val jobs = mutableListOf<Job>()
 			detectedBlocks.chunked(500).forEach { section ->
 				// chunk into sections to process parallel
-				jobs.add(async(Dispatchers.Default) {
-					// calculate new position and state for each block in this section
+				async(Dispatchers.Default) {
 					section.forEach { current ->
-						val target = modifier(current.toVec3d()).toBlockPos()
-						if (!detectedBlocks.contains(target) && !cachedBlockData[target]!!.isAir) {
-							collision = target // hit something, so we shouldn't actually move any blocks
-							println("collision: ${cachedBlockData[target]}, $target")
-						}
-						val currentBlock = cachedBlockData[current]!!
-						blocksToSet.putIfAbsent(current, Blocks.AIR.defaultState)
-						blocksToSet[target] = currentBlock.rotate(rotation)
-						if (currentBlock.hasBlockEntity()) {
-							entities[current] = target
-						}
+						targets[current] = modifier(current.toVec3d()).toBlockPos()
 					}
-				})
-			}
-		}
-		println("not blocking any more")
-		// check for collision
-		if (collision != null) {
-			sendMiniMessage("<gold>Blocked by ${world.getBlockState(collision!!).block.name} at <bold>(${collision!!.x}, ${collision!!.y}, ${collision!!.z}</bold>)!\"")
-			return
-		}
-		detectedBlocks.clear()
-		// move blocks
-		blocksToSet.forEach {
-			// todo: only set to target world if its a new block. if its air we want the old world
-			setBlockFast(it.key, it.value, targetWorld)
-			if (!it.value.isAir) { // this is kind of a bad fix, maybe there's a better way?
-				detectedBlocks.add(it.key)
+				}
 			}
 		}
 
-		// move entities
-		movePassengers(modifier, rotation)
-		entities.forEach { (from, to) ->
-			val entity = world.getBlockEntity(from) ?: return@forEach
-			(entity as BlockEntityMixin).setPos(to)
-			entity.world = targetWorld
-			entity.markDirty()
-			world.getChunk(to).setBlockEntity(entity)
+		targets.forEach { (_, target) ->
+			// todo: it's possible for detectedBlocks to contain it but not actually be detected (if the world is different)
+			if (!targetWorld.getBlockState(target).isAir && !detectedBlocks.contains(target)) {
+				sendMiniMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
+				return
+			}
 		}
+
+		val newDetectedBlocks = mutableSetOf<BlockPos>()
+		// iterating over twice isn't great
+		targets.forEach { (current, target) ->
+			val currentBlock = world.getBlockState(current)
+
+			// set the block
+			setBlockFast(target, currentBlock.rotate(rotation), targetWorld)
+			newDetectedBlocks.add(target)
+
+			// move any entities
+			if (currentBlock.hasBlockEntity()) {
+				val entity = world.getBlockEntity(current) ?: return@forEach
+				(entity as BlockEntityMixin).setPos(target)
+				entity.world = targetWorld
+				entity.markDirty()
+				world.getChunk(target).setBlockEntity(entity)
+			}
+		}
+
+		// there's probably a better way to get all detectedBlocks that aren't in newDetectedBlocks
+		detectedBlocks.filter { !newDetectedBlocks.contains(it) }.forEach {
+			setBlockFast(it, Blocks.AIR.defaultState, targetWorld)
+		}
+
+		detectedBlocks = newDetectedBlocks
+
 		// move multiblocks
 		multiblocks.map {
 			val mb = it.get() ?: return@map null
@@ -349,6 +292,7 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 			return@map new
 		}
 
+		movePassengers(modifier, rotation)
 		world = targetWorld
 		origin = modifier(origin.toVec3d()).toBlockPos()
 		callback()

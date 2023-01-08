@@ -18,6 +18,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import org.quiltmc.qkl.library.math.times
+import org.quiltmc.qkl.library.math.toVec3i
 
 // TODO: delete this whole thing: it's temporary
 class ShipBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : SimpleBlock(settings, type,
@@ -39,7 +40,7 @@ class ShipBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : 
 						player.sendMiniMessage("righted")
 					}
 					"go" -> {
-						craft.move(player.eyePos.normalize().times(5.0))
+						craft.move(player.eyePos.normalize().times(5.0).toVec3i())
 						player.sendMiniMessage("goed")
 					}
 				}

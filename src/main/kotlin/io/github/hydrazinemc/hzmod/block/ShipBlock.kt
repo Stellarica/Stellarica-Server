@@ -3,12 +3,10 @@ package io.github.hydrazinemc.hzmod.block
 import eu.pb4.polymer.blocks.api.BlockModelType
 import io.github.hydrazinemc.hzmod.crafts.Craft
 import io.github.hydrazinemc.hzmod.util.SimpleBlock
-import io.github.hydrazinemc.hzmod.util.sendMiniMessage
+import io.github.hydrazinemc.hzmod.util.sendRichMessage
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.network.message.MessageType
-import net.minecraft.network.message.SignedChatMessage
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.ActionResult
@@ -33,15 +31,15 @@ class ShipBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : 
 				when (message.content) {
 					"left" -> {
 						craft.rotate(BlockRotation.COUNTERCLOCKWISE_90)
-						player.sendMiniMessage("lefted")
+						player.sendRichMessage("lefted")
 					}
 					"right" -> {
 						craft.rotate(BlockRotation.CLOCKWISE_90)
-						player.sendMiniMessage("righted")
+						player.sendRichMessage("righted")
 					}
 					"go" -> {
 						craft.move(player.eyePos.normalize().times(5.0).toVec3i())
-						player.sendMiniMessage("goed")
+						player.sendRichMessage("goed")
 					}
 				}
 			}

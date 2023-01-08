@@ -6,10 +6,8 @@ import io.github.hydrazinemc.hzmod.multiblocks.MultiblockInstance
 import io.github.hydrazinemc.hzmod.multiblocks.OriginRelative
 import io.github.hydrazinemc.hzmod.util.asDegrees
 import io.github.hydrazinemc.hzmod.util.rotateCoordinates
-import io.github.hydrazinemc.hzmod.util.sendMiniMessage
-import kotlinx.coroutines.Deferred
+import io.github.hydrazinemc.hzmod.util.sendRichMessage
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import net.minecraft.block.BlockState
@@ -17,23 +15,17 @@ import net.minecraft.block.Blocks
 import net.minecraft.entity.LivingEntity
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket.Flag
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerChunkManager
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 import net.minecraft.world.chunk.Chunk
-import net.minecraft.world.chunk.ChunkSection
 import net.minecraft.world.chunk.WorldChunk
 import org.quiltmc.qkl.library.math.toBlockPos
 import org.quiltmc.qkl.library.math.toVec3d
-import org.quiltmc.qkl.library.math.toVec3i
-import org.quiltmc.qkl.library.recipe.coerceIngredient
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.system.measureTimeMillis
 
 class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity) {
@@ -99,7 +91,7 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 				if (undetectableBlocks.contains(world.getBlockState(currentBlock).block)) continue
 
 				if (detectedBlocks.size > sizeLimit) {
-					owner.sendMiniMessage("<gold>Detection limit reached. (${sizeLimit} blocks)")
+					owner.sendRichMessage("<gold>Detection limit reached. (${sizeLimit} blocks)")
 					nextBlocksToCheck.clear()
 					detectedBlocks.clear()
 					break
@@ -125,12 +117,12 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 		}
 
 		val elapsed = System.currentTimeMillis() - startTime
-		owner.sendMiniMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
-		owner.sendMiniMessage(
+		owner.sendRichMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
+		owner.sendRichMessage(
 			"<gray>Detected ${detectedBlocks.size} blocks in ${elapsed}ms. " +
 					"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
 		)
-		owner.sendMiniMessage(
+		owner.sendRichMessage(
 			"<gray>Calculated Hitbox in ${
 				measureTimeMillis {
 					calculateHitbox()
@@ -142,7 +134,7 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 		// this is probably slow
 		multiblocks.addAll(chunks.map { MULTIBLOCKS.get(it).multiblocks }.flatten().filter { detectedBlocks.contains(it.origin) }.map { WeakReference(it) })
 
-		owner.sendMiniMessage("<gray>Detected ${multiblocks.size} multiblocks")
+		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
 	}
 
 	fun movePassengers(offset: (Vec3d) -> Vec3d, rotation: BlockRotation) {
@@ -179,7 +171,7 @@ class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlaye
 	fun sendMiniMessage(message: String) {
 		passengers.forEach {
 			if (it is ServerPlayerEntity) {
-				it.sendMiniMessage(message)
+				it.sendRichMessage(message)
 			}
 		}
 	}

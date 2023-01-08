@@ -23,11 +23,11 @@ dependencies {
 	modImplementation(libs.bundles.polymer)
 	include(libs.bundles.polymer)
 
+	modImplementation(libs.placeholder)
+	include(libs.placeholder)
+
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
-
-	modImplementation(libs.bundles.adventure)
-	include(libs.bundles.adventure)
 
 	implementation(libs.kotlin.coroutines)
 }

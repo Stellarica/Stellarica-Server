@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
-class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity) {
+open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity) {
 	val sizeLimit = 10000
 
 	var multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()

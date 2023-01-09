@@ -21,10 +21,11 @@ class PlayerController(ship: Starship): Controller(ship) {
 		if (player != pilot) return@ItemUseEvent TypedActionResult.success(ItemStack.EMPTY)
 		when (player.inventory.selectedSlot) {
 			0 -> {
-				cruiseDirection = player.eyePos.normalize()
-				cruiseSpeed = 10
+				cruiseDirection = player.rotationVector.normalize()
+				cruiseSpeed = 5
 			}
 			1 -> cruiseSpeed = 0
+			2 -> ship.move(player.rotationVector.toVec3i())
 			4 -> ship.rotate(BlockRotation.CLOCKWISE_90)
 			5 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
 			8 -> ship.unpilot()
@@ -45,14 +46,8 @@ class PlayerController(ship: Starship): Controller(ship) {
 		}
 		return@PlayerSwapWithOffhandEvent ActionResult.SUCCESS
 	}
-	private val itemMove = PlayerInventoryActionEvent { player, _, _, _ ->
-		if (player == pilot) {
-			return@PlayerInventoryActionEvent ActionResult.FAIL
-		}
-		return@PlayerInventoryActionEvent ActionResult.SUCCESS
-	}
 	private val serverTick = ServerTickEvents.Start { _ ->
-		if (cruiseSpeed > 0 && counter % 20 == 0) {
+		if (cruiseSpeed > 0 && counter % 10 == 0) {
 			cruiseDirection?.multiply(cruiseSpeed.toDouble())?.let { ship.move(it.toVec3i()) }
 			counter = 0
 		}

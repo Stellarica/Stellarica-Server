@@ -17,8 +17,8 @@ import xyz.nucleoid.stimuli.event.player.PlayerSwapWithOffhandEvent
 
 class PlayerController(ship: Starship) : Controller(ship) {
 	var counter = 0
-	private val itemUse = ItemUseEvent { player, _ ->
-		if (player != pilot) return@ItemUseEvent TypedActionResult.success(ItemStack.EMPTY)
+	private val itemUse =  { player: ServerPlayerEntity, item: ItemStack ->
+		if (player != pilot)
 		when (player.inventory.selectedSlot) {
 			0 -> {
 				cruiseDirection = player.rotationVector.normalize()
@@ -31,29 +31,8 @@ class PlayerController(ship: Starship) : Controller(ship) {
 			5 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
 			8 -> ship.unpilot()
 		}
-		return@ItemUseEvent TypedActionResult.fail(ItemStack.EMPTY)
 	}
-	private val itemThrow = ItemThrowEvent { player, slot, stack ->
-		if (player == pilot) {
-			ship.rotate(BlockRotation.CLOCKWISE_90)
-			return@ItemThrowEvent ActionResult.FAIL
-		}
-		return@ItemThrowEvent ActionResult.SUCCESS
-	}
-	private val itemSwap = PlayerSwapWithOffhandEvent { player ->
-		if (player == pilot) {
-			ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
-			return@PlayerSwapWithOffhandEvent ActionResult.FAIL
-		}
-		return@PlayerSwapWithOffhandEvent ActionResult.SUCCESS
-	}
-	private val serverTick = ServerTickEvents.Start { _ ->
-		if (cruiseSpeed > 0 && counter % 10 == 0) {
-			cruiseDirection?.multiply(cruiseSpeed.toDouble())?.let { ship.move(it.toVec3i()) }
-			counter = 0
-		}
-		counter++
-	}
+
 
 	private var hotbar = mutableListOf<ItemStack>()
 	lateinit var pilot: ServerPlayerEntity
@@ -74,19 +53,11 @@ class PlayerController(ship: Starship) : Controller(ship) {
 				else -> ItemStack.EMPTY
 			})
 		}
-		Stimuli.global().listen(ItemUseEvent.EVENT, itemUse)
-		Stimuli.global().listen(ItemThrowEvent.EVENT, itemThrow)
-		Stimuli.global().listen(PlayerSwapWithOffhandEvent.EVENT, itemSwap)
-		ServerTickEvents.START.register(serverTick)
 	}
 
 	override fun onUnpilot() {
-		Stimuli.global().unlisten(ItemUseEvent.EVENT, itemUse)
-		Stimuli.global().unlisten(ItemThrowEvent.EVENT, itemThrow)
-		Stimuli.global().unlisten(PlayerSwapWithOffhandEvent.EVENT, itemSwap)
 		for (slot in 0..10) {
 			pilot.inventory.setStack(slot, hotbar[slot])
 		}
-		// todo: unregister serverTick
 	}
 }

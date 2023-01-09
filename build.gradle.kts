@@ -28,9 +28,6 @@ dependencies {
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
 
-	modImplementation(libs.stimuli)
-	include(libs.stimuli)
-
 	implementation(libs.kotlin.coroutines)
 }
 

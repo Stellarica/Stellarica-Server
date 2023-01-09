@@ -2,7 +2,6 @@ package io.github.hydrazinemc.hzmod.multiblocks
 
 
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
-import io.github.hydrazinemc.hzmod.multiblocks.event.MultiblockUndetectEvent
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -69,7 +68,7 @@ class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingCompone
 		val invalid = mutableSetOf<MultiblockInstance>()
 		multiblocks.forEach {
 			if (!it.validate()) {
-				MultiblockUndetectEvent.EVENT.invoker().onUndetect(it)
+				MultiblockUndetectEvent.call(it)
 				invalid.add(it)
 				chunk.setNeedsSaving(true)
 			}

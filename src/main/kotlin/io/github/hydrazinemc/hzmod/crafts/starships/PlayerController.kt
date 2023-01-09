@@ -77,7 +77,6 @@ class PlayerController(ship: Starship) : Controller(ship) {
 		Stimuli.global().listen(ItemUseEvent.EVENT, itemUse)
 		Stimuli.global().listen(ItemThrowEvent.EVENT, itemThrow)
 		Stimuli.global().listen(PlayerSwapWithOffhandEvent.EVENT, itemSwap)
-		Stimuli.global().listen(PlayerInventoryActionEvent.EVENT, itemMove)
 		ServerTickEvents.START.register(serverTick)
 	}
 
@@ -85,7 +84,6 @@ class PlayerController(ship: Starship) : Controller(ship) {
 		Stimuli.global().unlisten(ItemUseEvent.EVENT, itemUse)
 		Stimuli.global().unlisten(ItemThrowEvent.EVENT, itemThrow)
 		Stimuli.global().unlisten(PlayerSwapWithOffhandEvent.EVENT, itemSwap)
-		Stimuli.global().unlisten(PlayerInventoryActionEvent.EVENT, itemMove)
 		for (slot in 0..10) {
 			pilot.inventory.setStack(slot, hotbar[slot])
 		}

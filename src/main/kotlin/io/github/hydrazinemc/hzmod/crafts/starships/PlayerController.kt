@@ -4,16 +4,8 @@ import io.github.hydrazinemc.hzmod.util.setRichName
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.ActionResult
 import net.minecraft.util.BlockRotation
-import net.minecraft.util.TypedActionResult
 import org.quiltmc.qkl.library.math.toVec3i
-import org.quiltmc.qsl.lifecycle.api.event.ServerTickEvents
-import xyz.nucleoid.stimuli.Stimuli
-import xyz.nucleoid.stimuli.event.item.ItemThrowEvent
-import xyz.nucleoid.stimuli.event.item.ItemUseEvent
-import xyz.nucleoid.stimuli.event.player.PlayerInventoryActionEvent
-import xyz.nucleoid.stimuli.event.player.PlayerSwapWithOffhandEvent
 
 class PlayerController(ship: Starship) : Controller(ship) {
 	var counter = 0
@@ -36,6 +28,7 @@ class PlayerController(ship: Starship) : Controller(ship) {
 
 	private var hotbar = mutableListOf<ItemStack>()
 	lateinit var pilot: ServerPlayerEntity
+
 
 	// these could definitely be cleaned up a bit
 	override fun onPilot(player: ServerPlayerEntity) {

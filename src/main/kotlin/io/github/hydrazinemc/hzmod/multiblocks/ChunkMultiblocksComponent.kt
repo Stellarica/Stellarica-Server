@@ -2,6 +2,7 @@ package io.github.hydrazinemc.hzmod.multiblocks
 
 
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
+import io.github.hydrazinemc.hzmod.event.MultiblockUndetectEvent
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

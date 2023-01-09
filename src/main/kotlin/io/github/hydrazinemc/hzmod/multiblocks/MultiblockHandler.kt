@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hzmod.multiblocks
 
 import io.github.hydrazinemc.hzmod.Components.Companion.MULTIBLOCKS
+import io.github.hydrazinemc.hzmod.event.MultiblockDetectEvent
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 

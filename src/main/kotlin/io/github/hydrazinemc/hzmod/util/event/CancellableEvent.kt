@@ -6,18 +6,30 @@ package io.github.hydrazinemc.hzmod.util.event
 class CancellableEvent<T>: Event<T>() {
 	/**
 	 * Whether the event is cancelled.
-	 * Once its cancelled, it stops running lower priority listeners.
+	 * Once it's cancelled, it stops running lower priority listeners.
 	 * Resets every time [call] is called.
 	 */
 	var cancelled = false
+		private set
 
 	override fun call(data: T) {
 		cancelled = false
-		listeners.sortedBy { it.first }.forEach {
+		listeners.sortedBy { it.priority }.forEach {
 			if (cancelled) return@forEach
-			it.second.get()?.invoke(data)
+			it.invoke(it, data)
 		}
-		// kind of dumb to iterate through twice
-		listeners.removeIf { it.second.get() == null }
+	}
+
+	fun call(data: T, callback: (Boolean) -> Unit) {
+		call(data)
+		callback(cancelled)
+	}
+
+	/**
+	 * Cancel this event.
+	 * Once it's cancelled, it stops running lower priority listeners.
+	 */
+	fun cancel() {
+		this.cancelled = true
 	}
 }

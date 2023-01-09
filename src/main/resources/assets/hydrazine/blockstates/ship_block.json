@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hydrazine:block/ship_block" }
+    "": {
+      "model": "hydrazine:block/ship_block"
+    }
   }
 }

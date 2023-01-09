@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hydrazine:block/interface_block" }
+    "": {
+      "model": "hydrazine:block/interface_block"
+    }
   }
 }

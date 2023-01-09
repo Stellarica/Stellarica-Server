@@ -60,8 +60,9 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 
 	fun calculateHitbox() {
 		detectedBlocks
-			.map { pos -> pos.subtract(origin)
-				.let { OriginRelative(it.x, it.y, it.z) }
+			.map { pos ->
+				pos.subtract(origin)
+					.let { OriginRelative(it.x, it.y, it.z) }
 			}
 			.sortedBy { -it.y }
 			.forEach { block ->
@@ -132,7 +133,9 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		// Detect all multiblocks
 		multiblocks.clear()
 		// this is probably slow
-		multiblocks.addAll(chunks.map { MULTIBLOCKS.get(it).multiblocks }.flatten().filter { detectedBlocks.contains(it.origin) }.map { WeakReference(it) })
+		multiblocks.addAll(
+			chunks.map { MULTIBLOCKS.get(it).multiblocks }.flatten().filter { detectedBlocks.contains(it.origin) }
+				.map { WeakReference(it) })
 
 		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
 	}
@@ -161,7 +164,15 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 				else offset(it.pos)
 			// todo: handle teleporting to a different world
 			if (it is ServerPlayerEntity) {
-				it.networkHandler.requestTeleport(destination.x, destination.y, destination.z, it.yaw + rotation.asDegrees.toFloat(), it.pitch, Flag.ALL_FLAGS, true)
+				it.networkHandler.requestTeleport(
+					destination.x,
+					destination.y,
+					destination.z,
+					it.yaw + rotation.asDegrees.toFloat(),
+					it.pitch,
+					Flag.ALL_FLAGS,
+					true
+				)
 			} else {
 				it.teleport(destination.x, destination.y, destination.z)
 			}

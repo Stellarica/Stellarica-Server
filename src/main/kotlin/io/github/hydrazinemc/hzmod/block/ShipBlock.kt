@@ -14,7 +14,8 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 // TODO: delete this whole thing: it's temporary
-class ShipBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : SimpleBlock(settings, type,
+class ShipBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : SimpleBlock(
+	settings, type,
 	modelId
 ) {
 	@Suppress("OVERRIDE_DEPRECATION") // todo: figure out why it's deprecated!

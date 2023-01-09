@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hydrazine:block/titanium_block" }
+    "": {
+      "model": "hydrazine:block/titanium_block"
+    }
   }
 }

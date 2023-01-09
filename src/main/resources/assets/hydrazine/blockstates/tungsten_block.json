@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hydrazine:block/tungsten_block" }
+    "": {
+      "model": "hydrazine:block/tungsten_block"
+    }
   }
 }

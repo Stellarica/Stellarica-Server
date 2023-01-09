@@ -13,7 +13,8 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class InterfaceBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : SimpleBlock(settings, type,
+class InterfaceBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : SimpleBlock(
+	settings, type,
 	modelId
 ) {
 	@Suppress("OVERRIDE_DEPRECATION") // todo: figure out why it's deprecated!

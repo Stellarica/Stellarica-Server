@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hydrazine:block/adamantite_block" }
+    "": {
+      "model": "hydrazine:block/adamantite_block"
+    }
   }
 }

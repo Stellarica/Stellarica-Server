@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hydrazine:block/iridium_block" }
+    "": {
+      "model": "hydrazine:block/iridium_block"
+    }
   }
 }

@@ -2,13 +2,13 @@ package io.github.hydrazinemc.hzmod
 
 import eu.pb4.polymer.blocks.api.BlockModelType
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils
-import io.github.hydrazinemc.hzmod.util.SimpleBlock
-import io.github.hydrazinemc.hzmod.util.SimpleBlockItem
 import io.github.hydrazinemc.hzmod.block.InterfaceBlock
 import io.github.hydrazinemc.hzmod.block.ShipBlock
 import io.github.hydrazinemc.hzmod.multiblocks.MultiblockHandler
 import io.github.hydrazinemc.hzmod.multiblocks.MultiblockType
 import io.github.hydrazinemc.hzmod.multiblocks.OriginRelative
+import io.github.hydrazinemc.hzmod.util.SimpleBlock
+import io.github.hydrazinemc.hzmod.util.SimpleBlockItem
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
@@ -21,7 +21,7 @@ import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings
 
 
-class Hydrazine: ModInitializer {
+class Hydrazine : ModInitializer {
 	companion object {
 		val MODID = "hydrazine"
 		fun identifier(id: String?): Identifier {
@@ -56,13 +56,15 @@ class Hydrazine: ModInitializer {
 			)
 		)
 		registerSimpleBlockItem(ship, "ship_block")
-		MultiblockHandler.types.add(MultiblockType(
-			identifier("test_multiblock"),
-			mapOf(
-				OriginRelative(0,-1,0) to Blocks.IRON_BLOCK,
-				OriginRelative(1, 0, 0) to Blocks.REDSTONE_BLOCK
+		MultiblockHandler.types.add(
+			MultiblockType(
+				identifier("test_multiblock"),
+				mapOf(
+					OriginRelative(0, -1, 0) to Blocks.IRON_BLOCK,
+					OriginRelative(1, 0, 0) to Blocks.REDSTONE_BLOCK
+				)
 			)
-		))
+		)
 
 
 		// temporary code, but don't remove these blocks

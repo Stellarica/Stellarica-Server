@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 
-class SimpleItem(settings: Settings?, modelId: String?): Item(settings), PolymerItem {
+class SimpleItem(settings: Settings?, modelId: String?) : Item(settings), PolymerItem {
 	private val polymerModel = PolymerResourcePackUtils.requestModel(Items.BARRIER, Hydrazine.identifier(modelId))
 
 	override fun getPolymerItem(itemStack: ItemStack, player: ServerPlayerEntity?): Item {

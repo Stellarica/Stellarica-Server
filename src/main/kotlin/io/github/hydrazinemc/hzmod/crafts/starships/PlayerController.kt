@@ -15,15 +15,16 @@ import xyz.nucleoid.stimuli.event.item.ItemUseEvent
 import xyz.nucleoid.stimuli.event.player.PlayerInventoryActionEvent
 import xyz.nucleoid.stimuli.event.player.PlayerSwapWithOffhandEvent
 
-class PlayerController(ship: Starship): Controller(ship) {
+class PlayerController(ship: Starship) : Controller(ship) {
 	var counter = 0
-	private val itemUse =  ItemUseEvent { player, _ ->
+	private val itemUse = ItemUseEvent { player, _ ->
 		if (player != pilot) return@ItemUseEvent TypedActionResult.success(ItemStack.EMPTY)
 		when (player.inventory.selectedSlot) {
 			0 -> {
 				cruiseDirection = player.rotationVector.normalize()
 				cruiseSpeed = 5
 			}
+
 			1 -> cruiseSpeed = 0
 			2 -> ship.move(player.rotationVector.toVec3i())
 			4 -> ship.rotate(BlockRotation.CLOCKWISE_90)
@@ -32,7 +33,7 @@ class PlayerController(ship: Starship): Controller(ship) {
 		}
 		return@ItemUseEvent TypedActionResult.fail(ItemStack.EMPTY)
 	}
-	private val itemThrow = ItemThrowEvent { player, slot, stack  ->
+	private val itemThrow = ItemThrowEvent { player, slot, stack ->
 		if (player == pilot) {
 			ship.rotate(BlockRotation.CLOCKWISE_90)
 			return@ItemThrowEvent ActionResult.FAIL

@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hydrazine:block/palladium_block" }
+    "": {
+      "model": "hydrazine:block/palladium_block"
+    }
   }
 }

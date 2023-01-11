@@ -15,11 +15,14 @@ class CancellableEvent<T>: Event<T>() {
 	override fun call(data: T) {
 		cancelled = false
 		listeners.sortedBy { it.priority }.forEach {
-			if (cancelled) return@forEach
 			it.invoke(it, data)
+			if (cancelled) return
 		}
 	}
 
+	/**
+	 * Call this event with [data]. Afterward, run [callback] with the cancelled status.
+	 */
 	fun call(data: T, callback: (Boolean) -> Unit) {
 		call(data)
 		callback(cancelled)

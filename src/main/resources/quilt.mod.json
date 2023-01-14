@@ -54,5 +54,5 @@
   "cardinal-components": [
     "stellarica:multiblocks"
   ],
-  "mixin": "hydrazine.mixins.json"
+  "mixin": "stellarica.mixins.json"
 }

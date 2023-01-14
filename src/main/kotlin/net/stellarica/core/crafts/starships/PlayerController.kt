@@ -47,6 +47,8 @@ class PlayerController(ship: Starship) : Controller(ship) {
 		}
 	}
 
+	fun Any?.setRichName(name: String) {} // just to let it compile
+
 	override fun onUnpilot() {
 		for (slot in 0..10) {
 			pilot.inventory.setStack(slot, hotbar[slot])

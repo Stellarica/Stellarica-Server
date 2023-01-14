@@ -9,7 +9,9 @@ version = property("version")!!
 
 repositories {
 	maven("https://maven.nucleoid.xyz") // polymer, stimuli
+	maven("https://jitpack.io") // mixin extras
 	maven("https://ladysnake.jfrog.io/artifactory/mods") // cardinal components
+	maven("https://repo.stellarica.net/snapshots")
 }
 
 dependencies {
@@ -27,6 +29,9 @@ dependencies {
 
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
+
+	modImplementation(libs.oxidiser)
+	include(libs.oxidiser)
 
 	implementation(libs.kotlin.coroutines)
 }

@@ -11,6 +11,8 @@ polymer = "0.3.5+1.19.3"
 placeholder = "2.0.0-pre.2+1.19.3"
 cardinal = "5.1.0"
 
+oxidiser = "0.1.0-SNAPSHOT"
+
 kotlin_coroutines = "1.6.4"
 
 [libraries]
@@ -33,6 +35,8 @@ cardinal_base = { module = "dev.onyxstudios.cardinal-components-api:cardinal-com
 cardinal_chunk = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk", version.ref = "cardinal" }
 
 kotlin_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin_coroutines" }
+
+oxidiser = { module = "net.stellarica:oxidiser", version.ref = "oxidiser" }
 
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]

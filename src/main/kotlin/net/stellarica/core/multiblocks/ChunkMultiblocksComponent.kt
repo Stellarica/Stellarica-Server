@@ -12,7 +12,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.WorldChunk
-import net.stellarica.core.event.MultiblockUndetectEvent
+import net.stellarica.core.event.multiblock.MultiblockUndetectEvent
 
 
 class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingComponent {
@@ -69,7 +69,7 @@ class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingCompone
 		val invalid = mutableSetOf<MultiblockInstance>()
 		multiblocks.forEach {
 			if (!it.validate()) {
-				MultiblockUndetectEvent.call(it)
+				MultiblockUndetectEvent.call(MultiblockUndetectEvent.EventData(it))
 				invalid.add(it)
 				chunk.setNeedsSaving(true)
 			}

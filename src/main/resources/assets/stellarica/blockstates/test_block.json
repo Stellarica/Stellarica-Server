@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "stellarica:block/test_block"
+    }
+  }
+}

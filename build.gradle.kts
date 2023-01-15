@@ -30,8 +30,8 @@ dependencies {
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
 
-	modImplementation(libs.oxidiser)
-	include(libs.oxidiser)
+	modImplementation(libs.oxidizer)
+	include(libs.oxidizer)
 
 	implementation(libs.kotlin.coroutines)
 }

@@ -23,7 +23,7 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings
 
 class Stellarica : ModInitializer {
 	companion object {
-		val MODID = "hydrazine"
+		val MODID = "stellarica"
 		fun identifier(id: String?): Identifier {
 			return Identifier(MODID, id)
 		}

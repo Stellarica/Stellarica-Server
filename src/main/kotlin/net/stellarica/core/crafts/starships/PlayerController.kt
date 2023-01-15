@@ -4,19 +4,23 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.BlockRotation
+import net.stellarica.core.util.HotbarMenu
+import net.stellarica.core.util.setRichName
 import org.quiltmc.qkl.library.math.toVec3i
 
-class PlayerController(ship: Starship) : Controller(ship) {
-	var counter = 0
-	private val itemUse =  { player: ServerPlayerEntity, item: ItemStack ->
+class PlayerController(private val ship: Starship, private val pilot: ServerPlayerEntity) : HotbarMenu(pilot) {
+
+	//val onTick = StartServerTickEvent
+
+	override fun onButtonClicked(index: Int) {
 		if (player != pilot)
 		when (player.inventory.selectedSlot) {
 			0 -> {
-				cruiseDirection = player.rotationVector.normalize()
-				cruiseSpeed = 5
+				ship.cruiseDirection = player.rotationVector.normalize()
+				ship.cruiseSpeed = 5
 			}
 
-			1 -> cruiseSpeed = 0
+			1 -> ship.cruiseSpeed = 0
 			2 -> ship.move(player.rotationVector.toVec3i())
 			4 -> ship.rotate(BlockRotation.CLOCKWISE_90)
 			5 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
@@ -24,16 +28,13 @@ class PlayerController(ship: Starship) : Controller(ship) {
 		}
 	}
 
-
-	private var hotbar = mutableListOf<ItemStack>()
-	lateinit var pilot: ServerPlayerEntity
-
+	override fun onMenuClosed() {
+	//	onTick.unregister()
+	}
 
 	// these could definitely be cleaned up a bit
-	override fun onPilot(player: ServerPlayerEntity) {
-		this.pilot = player
-		for (slot in 0..10) {
-			hotbar.add(player.inventory.getStack(slot))
+	init {
+		for (slot in 0..8) {
 			player.inventory.setStack(slot, when (slot) {
 				0 -> ItemStack(Items.GREEN_CONCRETE).also { it.setRichName("<b>Cruise") }
 				1 -> ItemStack(Items.RED_CONCRETE).also { it.setRichName("<b>Stop") }
@@ -44,14 +45,6 @@ class PlayerController(ship: Starship) : Controller(ship) {
 				8 -> ItemStack(Items.BARRIER).also { it.setRichName("<b>Unpilot") }
 				else -> ItemStack.EMPTY
 			})
-		}
-	}
-
-	fun Any?.setRichName(name: String) {} // just to let it compile
-
-	override fun onUnpilot() {
-		for (slot in 0..10) {
-			pilot.inventory.setStack(slot, hotbar[slot])
 		}
 	}
 }

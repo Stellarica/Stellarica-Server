@@ -8,8 +8,8 @@ import net.stellarica.core.crafts.Craft
 
 
 class Starship(origin: BlockPos, world: ServerWorld, owner: ServerPlayerEntity) : Craft(origin, world, owner) {
-	var cruiseDirection: Vec3d? = null
-	var cruiseSpeed: Int = 0
+	var cruiseDirection = Vec3d.ZERO!!
+	var cruiseSpeed = 0
 
 	val components = mutableSetOf<ShipComponent>()
 

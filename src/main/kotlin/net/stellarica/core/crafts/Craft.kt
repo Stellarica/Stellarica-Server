@@ -8,7 +8,6 @@ import kotlinx.coroutines.runBlocking
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.entity.LivingEntity
-import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket.Flag
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.BlockRotation
@@ -163,15 +162,15 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 				)
 				else offset(it.pos)
 			// todo: handle teleporting to a different world
+
 			if (it is ServerPlayerEntity) {
-				it.networkHandler.requestTeleport(
+				it.teleport(
+					world,
 					destination.x,
 					destination.y,
 					destination.z,
 					it.yaw + rotation.asDegrees.toFloat(),
-					it.pitch,
-					Flag.ALL_FLAGS,
-					true
+					it.pitch
 				)
 			} else {
 				it.teleport(destination.x, destination.y, destination.z)

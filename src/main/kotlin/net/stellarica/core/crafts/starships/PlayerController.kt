@@ -4,17 +4,29 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.BlockRotation
+import net.stellarica.core.util.EventPriority
 import net.stellarica.core.util.HotbarMenu
 import net.stellarica.core.util.setRichName
+import net.stellarica.oxidizer.event.Event
+import net.stellarica.oxidizer.event.server.StartServerTickEvent
 import org.quiltmc.qkl.library.math.toVec3i
 
 class PlayerController(private val ship: Starship, private val pilot: ServerPlayerEntity) : HotbarMenu(pilot) {
 
-	//val onTick = StartServerTickEvent
+	private var counter = 0;
+
+	val onTick = StartServerTickEvent.listen(EventPriority.LOWEST.ordinal) { _ ->
+		counter++
+		if (counter == 10 && ship.cruiseSpeed > 0) {
+			counter = 0
+			ship.move(ship.cruiseDirection.multiply(ship.cruiseSpeed.toDouble()).toVec3i())
+			println("moved")
+		}
+		return@listen Event.Result.CONTINUE
+	}
 
 	override fun onButtonClicked(index: Int) {
-		if (player != pilot)
-		when (player.inventory.selectedSlot) {
+		when (index) {
 			0 -> {
 				ship.cruiseDirection = player.rotationVector.normalize()
 				ship.cruiseSpeed = 5
@@ -29,7 +41,7 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 	}
 
 	override fun onMenuClosed() {
-	//	onTick.unregister()
+		onTick.unregister()
 	}
 
 	// these could definitely be cleaned up a bit

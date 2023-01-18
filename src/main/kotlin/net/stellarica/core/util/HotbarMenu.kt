@@ -5,6 +5,7 @@ import net.stellarica.oxidizer.event.Event
 import net.stellarica.oxidizer.event.block.BlockPlaceEvent
 import net.stellarica.oxidizer.event.block.BlockUseEvent
 import net.stellarica.oxidizer.event.entity.EntityUseEvent
+import net.stellarica.oxidizer.event.item.ItemPickupEvent
 import net.stellarica.oxidizer.event.item.ItemThrowEvent
 import net.stellarica.oxidizer.event.player.PlayerDeathEvent
 import net.stellarica.oxidizer.event.player.PlayerInventoryActionEvent
@@ -25,6 +26,10 @@ abstract class HotbarMenu(val player: ServerPlayerEntity) {
 		PlayerDeathEvent.listen(EventPriority.LOWEST.ordinal) {
 			if (it.player == player) close()
 			return@listen Event.Result.CONTINUE
+		},
+		ItemPickupEvent.listen(EventPriority.LOWEST.ordinal) {
+			if (it.player == player) return@listen Event.Result.CANCEL
+			else return@listen Event.Result.CONTINUE
 		},
 		PlayerSwapWithOffhandEvent.listen(EventPriority.LOWEST.ordinal) {
 			if (it.player == player) return@listen Event.Result.CANCEL

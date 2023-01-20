@@ -1,31 +1,26 @@
 package net.stellarica.core.crafts.starships
 
+import eu.pb4.sgui.api.ClickType
+import eu.pb4.sgui.api.elements.GuiElementInterface
+import eu.pb4.sgui.api.gui.HotbarGui
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.BlockRotation
-import net.stellarica.core.util.EventPriority
-import net.stellarica.core.util.HotbarMenu
 import net.stellarica.core.util.setRichName
-import net.stellarica.oxidizer.event.Event
-import net.stellarica.oxidizer.event.server.StartServerTickEvent
 import org.quiltmc.qkl.library.math.toVec3i
 
-class PlayerController(private val ship: Starship, private val pilot: ServerPlayerEntity) : HotbarMenu(pilot) {
+class PlayerController(private val ship: Starship, private val pilot: ServerPlayerEntity) : HotbarGui(pilot) {
 
 	private var counter = 0;
 
-	val onTick = StartServerTickEvent.listen(EventPriority.LOWEST.ordinal) { _ ->
-		counter++
-		if (counter == 10 && ship.cruiseSpeed > 0) {
-			counter = 0
-			ship.move(ship.cruiseDirection.multiply(ship.cruiseSpeed.toDouble()).toVec3i())
-			println("moved")
-		}
-		return@listen Event.Result.CONTINUE
-	}
-
-	override fun onButtonClicked(index: Int) {
+	override fun onClick(
+		index: Int,
+		type: ClickType?,
+		action: SlotActionType?,
+		element: GuiElementInterface?
+	): Boolean {
 		when (index) {
 			0 -> {
 				ship.cruiseDirection = player.rotationVector.normalize()
@@ -37,16 +32,27 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 			5 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
 			8 -> ship.unpilot()
 		}
+		return super.onClick(index, type, action, element)
 	}
 
-	override fun onMenuClosed() {
-		onTick.unregister()
+	override fun onTick() {
+		super.onTick()
+		counter++
+		if (counter == 10 && ship.cruiseSpeed > 0) {
+			counter = 0
+			ship.move(ship.cruiseDirection.multiply(ship.cruiseSpeed.toDouble()).toVec3i())
+			println("moved")
+		}
+	}
+
+	override fun canPlayerClose(): Boolean {
+		return false;
 	}
 
 	// these could definitely be cleaned up a bit
 	init {
 		for (slot in 0..8) {
-			player.inventory.setStack(slot, when (slot) {
+			this.setSlot(slot, when (slot) {
 				0 -> ItemStack(Items.GREEN_STAINED_GLASS_PANE).also { it.setRichName("<b>Cruise") }
 				1 -> ItemStack(Items.RED_STAINED_GLASS_PANE).also { it.setRichName("<b>Stop") }
 				2 -> ItemStack(Items.YELLOW_STAINED_GLASS_PANE).also { it.setRichName("<b>Precision") }
@@ -57,5 +63,6 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 				else -> ItemStack.EMPTY
 			})
 		}
+		open()
 	}
 }

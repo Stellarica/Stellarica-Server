@@ -16,12 +16,12 @@ import net.stellarica.core.multiblocks.OriginRelative
 import net.stellarica.core.util.SimpleBlock
 import net.stellarica.core.util.SimpleBlockItem
 import org.quiltmc.loader.api.ModContainer
-import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
+import org.quiltmc.qsl.base.api.entrypoint.server.DedicatedServerModInitializer
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings
 
 
-class Stellarica : ModInitializer {
+class Stellarica : DedicatedServerModInitializer {
 	companion object {
 		val MODID = "stellarica"
 		fun identifier(id: String?): Identifier {
@@ -29,7 +29,7 @@ class Stellarica : ModInitializer {
 		}
 	}
 
-	override fun onInitialize(mod: ModContainer?) {
+	override fun onInitializeServer(mod: ModContainer?) {
 		PolymerResourcePackUtils.markAsRequired()
 		PolymerResourcePackUtils.addModAssets(MODID)
 		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "block/test_block")

@@ -21,10 +21,6 @@
     "entrypoints": {
       "server_init": {
         "adapter": "kotlin",
-        "value": "net.stellarica.core.server.Server"
-      },
-      "init": {
-        "adapter": "kotlin",
         "value": "net.stellarica.core.Stellarica"
       },
       "cardinal-components": {

@@ -9,6 +9,7 @@ quilt_kotlin = "1.0.1+kt.1.7.22+flk.1.8.6"
 
 polymer = "0.3.5+1.19.3"
 placeholder = "2.0.0-pre.2+1.19.3"
+sgui = "1.2.1+1.19.3"
 cardinal = "5.1.0"
 
 oxidizer = "0.1.0-SNAPSHOT"
@@ -30,6 +31,8 @@ polymer_blocks = { module = "eu.pb4:polymer-blocks", version.ref = "polymer" }
 polymer_autohost = { module = "eu.pb4:polymer-autohost", version.ref = "polymer" }
 
 placeholder = { module = "eu.pb4:placeholder-api", version.ref = "placeholder" }
+
+sgui = { module = "eu.pb4:sgui", version.ref = "sgui" }
 
 cardinal_base = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-base", version.ref = "cardinal" }
 cardinal_chunk = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk", version.ref = "cardinal" }

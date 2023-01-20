@@ -27,6 +27,9 @@ dependencies {
 	modImplementation(libs.placeholder)
 	include(libs.placeholder)
 
+	modImplementation(libs.sgui)
+	include(libs.sgui)
+
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
 

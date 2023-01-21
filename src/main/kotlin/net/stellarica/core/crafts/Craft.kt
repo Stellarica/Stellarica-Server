@@ -4,9 +4,11 @@ import net.stellarica.core.Components.Companion.MULTIBLOCKS
 import net.stellarica.core.mixin.BlockEntityMixin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
@@ -195,12 +197,11 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 			chunk.setBlockState(pos, Blocks.GLASS.defaultState, false)
 			section = chunk.sectionArray[chunkSection]
 		}
-		if (section!!.getBlockState(pos.x and 15, pos.y and 15, pos.z and 15) == state) {
-			//Block is already of correct type and data, don't overwrite
-			return
-		}
+		val oldState = section!!.getBlockState(pos.x and 15, pos.y and 15, pos.z and 15)
+		if (oldState == state) return //Block is already of correct type and data, don't overwrite
+
 		section.setBlockState(pos.x and 15, pos.y and 15, pos.z and 15, state)
-		world.updateListeners(pos, state, state, 3)
+		world.updateListeners(pos, oldState, state, 3)
 		// world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
 		//todo: LIGHTING IS FOR CHUMPS!
 		chunk.setNeedsSaving(true)
@@ -234,16 +235,21 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 	}
 
 	private fun change(
+		/** The transformation to apply to each block in the craft */
 		modifier: (Vec3d) -> Vec3d,
+		/** The world to move to */
 		targetWorld: ServerWorld,
+		/** The amount to rotate the ship by */
 		rotation: BlockRotation = BlockRotation.NONE,
+		/** Callback called after the craft finishes moving */
 		callback: () -> Unit = {}
 	) {
+		// calculate new block locations
 		val targets = ConcurrentHashMap<BlockPos, BlockPos>()
 		runBlocking {
 			detectedBlocks.chunked(500).forEach { section ->
 				// chunk into sections to process parallel
-				async(Dispatchers.Default) {
+				launch(Dispatchers.Default) {
 					section.forEach { current ->
 						targets[current] = modifier(current.toVec3d()).toBlockPos()
 					}
@@ -251,39 +257,62 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 			}
 		}
 
+		// We need to get the original blockstates before we start setting blocks
+		// otherwise, if we just try to get the state as we set the block, the state might have already been set.
+		// Consider moving a block from b to c. If a has already been moved to b, we don't want to copy a to c.
+		// see https://discord.com/channels/1038493335679156425/1038504764356427877/1066184457264046170
+		//
+		// However, we don't need to go and get the states of the current blocks, as if it isn't in
+		// the target blocks, it won't be overwritten, so we can just get it when it comes time to set the block
+		//
+		// This solution ~~may not be~~ isn't the most efficient, but it works
+		val original = mutableMapOf<BlockPos, BlockState>()
+		val entities = mutableMapOf<BlockPos, BlockEntity>()
+
+		// check for collisions
 		targets.forEach { (_, target) ->
 			// todo: it's possible for detectedBlocks to contain it but not actually be detected (if the world is different)
-			if (!targetWorld.getBlockState(target).isAir && !detectedBlocks.contains(target)) {
+			val state = targetWorld.getBlockState(target)
+			if (!state.isAir && !detectedBlocks.contains(target)) {
 				sendMiniMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
 				return
 			}
+			// also use this time to get the original state of these blocks
+			if (state.hasBlockEntity()) {
+				entities[target] = targetWorld.getBlockEntity(target)!!
+			}
+			original[target] = state
 		}
 
-		val newDetectedBlocks = mutableSetOf<BlockPos>()
+		// if the world we're moving to isn't the world we're coming from, the whole map of original states we got is useless
+		if (world != targetWorld) {
+			original.clear()
+			entities.clear()
+		}
+
 		// iterating over twice isn't great
+		val newDetectedBlocks = mutableSetOf<BlockPos>()
 		targets.forEach { (current, target) ->
-			val currentBlock = world.getBlockState(current)
+			val currentBlock = original.getOrElse(current) {world.getBlockState(current)}
 
 			// set the block
 			setBlockFast(target, currentBlock.rotate(rotation), targetWorld)
 			newDetectedBlocks.add(target)
 
 			// move any entities
-			if (currentBlock.hasBlockEntity()) {
-				val entity = world.getBlockEntity(current) ?: return@forEach
+			if (entities.contains(current) || currentBlock.hasBlockEntity()) {
+				val entity = entities.getOrElse(current) {world.getBlockEntity(current)!!}
 				(entity as BlockEntityMixin).setPos(target)
 				entity.world = targetWorld
 				entity.markDirty()
 				world.getChunk(target).setBlockEntity(entity)
 			}
-		}
 
-		// there's probably a better way to get all detectedBlocks that aren't in newDetectedBlocks
-		detectedBlocks.filter { !newDetectedBlocks.contains(it) }.forEach {
-			setBlockFast(it, Blocks.AIR.defaultState, targetWorld)
+			// if no other block is moving to where we were, set it to air
+			if (current !in targets.values) {
+				setBlockFast(current, Blocks.AIR.defaultState, world)
+			}
 		}
-
-		detectedBlocks = newDetectedBlocks
 
 		// move multiblocks
 		multiblocks.map {
@@ -294,7 +323,12 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 			return@map new
 		}
 
+		// finish up
 		movePassengers(modifier, rotation)
+		if (newDetectedBlocks.size != detectedBlocks.size) {
+			println("Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!")
+		}
+		detectedBlocks = newDetectedBlocks
 		world = targetWorld
 		origin = modifier(origin.toVec3d()).toBlockPos()
 		callback()

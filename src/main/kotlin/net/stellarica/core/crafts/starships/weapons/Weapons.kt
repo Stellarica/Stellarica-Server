@@ -5,8 +5,8 @@ import net.minecraft.util.math.Vec3d
 import net.stellarica.core.crafts.starships.ShipComponent
 import net.stellarica.core.crafts.starships.Starship
 import net.stellarica.core.multiblocks.MultiblockInstance
-import org.quiltmc.qkl.library.math.dot
-import org.quiltmc.qkl.library.math.toVec3d
+import net.stellarica.core.util.dot
+import net.stellarica.core.util.toVec3d
 import java.lang.ref.WeakReference
 import kotlin.math.PI
 import kotlin.math.abs

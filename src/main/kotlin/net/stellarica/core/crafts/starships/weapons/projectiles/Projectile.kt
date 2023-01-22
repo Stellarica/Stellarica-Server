@@ -9,9 +9,9 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.RaycastContext
 import net.stellarica.core.Stellarica.Companion.ships
 import net.stellarica.core.crafts.Craft
+import net.stellarica.core.util.toBlockPos
 import net.stellarica.oxidizer.event.Event
 import net.stellarica.oxidizer.event.server.StartServerTickEvent
-import org.quiltmc.qkl.library.math.toBlockPos
 
 abstract class Projectile {
 	abstract val range: Int

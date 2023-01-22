@@ -8,10 +8,10 @@ import net.minecraft.item.Items
 import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.BlockRotation
-import net.minecraft.util.math.Vec3i
 import net.stellarica.core.crafts.starships.weapons.Weapons
 import net.stellarica.core.util.setRichName
-import org.quiltmc.qkl.library.math.toVec3i
+import net.stellarica.core.util.toVec3i
+
 
 class PlayerController(private val ship: Starship, private val pilot: ServerPlayerEntity) : HotbarGui(pilot) {
 

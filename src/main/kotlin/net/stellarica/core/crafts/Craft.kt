@@ -23,8 +23,8 @@ import net.stellarica.core.multiblocks.OriginRelative
 import net.stellarica.core.util.asDegrees
 import net.stellarica.core.util.rotateCoordinates
 import net.stellarica.core.util.sendRichMessage
-import org.quiltmc.qkl.library.math.toBlockPos
-import org.quiltmc.qkl.library.math.toVec3d
+import net.stellarica.core.util.toBlockPos
+import net.stellarica.core.util.toVec3d
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis

@@ -10,6 +10,8 @@ import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import net.stellarica.core.block.InterfaceBlock
 import net.stellarica.core.block.ShipBlock
+import net.stellarica.core.crafts.Craft
+import net.stellarica.core.crafts.starships.Starship
 import net.stellarica.core.multiblocks.MultiblockHandler
 import net.stellarica.core.multiblocks.MultiblockType
 import net.stellarica.core.multiblocks.OriginRelative
@@ -27,6 +29,9 @@ class Stellarica : DedicatedServerModInitializer {
 		fun identifier(id: String?): Identifier {
 			return Identifier(MODID, id)
 		}
+
+		// todo: find a better place for this
+		var ships: MutableSet<Starship> = mutableSetOf()
 	}
 
 	override fun onInitializeServer(mod: ModContainer?) {
@@ -65,6 +70,15 @@ class Stellarica : DedicatedServerModInitializer {
 				)
 			)
 		)
+
+		MultiblockHandler.types.add(MultiblockType(
+			identifier("test_weapon"),
+			mapOf(
+				OriginRelative(0, 0, 0) to inter,
+				OriginRelative(1, 0, 0) to Blocks.IRON_BLOCK,
+				OriginRelative(2, 0, 0) to Blocks.BLAST_FURNACE
+			)
+		))
 
 
 		// temporary code, but don't remove these blocks

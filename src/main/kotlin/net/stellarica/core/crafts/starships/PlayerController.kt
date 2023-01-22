@@ -8,6 +8,8 @@ import net.minecraft.item.Items
 import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.BlockRotation
+import net.minecraft.util.math.Vec3i
+import net.stellarica.core.crafts.starships.weapons.Weapons
 import net.stellarica.core.util.setRichName
 import org.quiltmc.qkl.library.math.toVec3i
 
@@ -30,6 +32,11 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 			2 -> ship.move(player.rotationVector.multiply(1.5).toVec3i())
 			4 -> ship.rotate(BlockRotation.CLOCKWISE_90)
 			5 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
+			7 -> {
+				ship.components.firstOrNull { it is Weapons }?.let {
+					(it as Weapons).fire()
+				}
+			}
 			8 -> ship.unpilot()
 		}
 		return super.onClick(index, type, action, element)

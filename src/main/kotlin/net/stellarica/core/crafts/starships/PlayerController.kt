@@ -30,8 +30,8 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 			}
 			1 -> ship.cruiseSpeed = 0
 			2 -> ship.move(player.rotationVector.multiply(1.5).toVec3i())
-			4 -> ship.rotate(BlockRotation.CLOCKWISE_90)
-			5 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
+			4 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
+			5 -> ship.rotate(BlockRotation.CLOCKWISE_90)
 			7 -> {
 				ship.components.firstOrNull { it is Weapons }?.let {
 					(it as Weapons).fire()

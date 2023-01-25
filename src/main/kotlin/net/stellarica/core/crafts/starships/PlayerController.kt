@@ -48,7 +48,6 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 		if (counter >= 10 && ship.cruiseSpeed > 0) {
 			counter = 0
 			ship.move(ship.cruiseDirection.multiply(ship.cruiseSpeed.toDouble()).toVec3i())
-			println("moved")
 		}
 	}
 

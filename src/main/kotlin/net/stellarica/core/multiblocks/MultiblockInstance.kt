@@ -1,16 +1,25 @@
 package net.stellarica.core.multiblocks
 
 import net.minecraft.block.Block
+import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
+import net.minecraft.world.chunk.Chunk
 
 data class MultiblockInstance(
 	val origin: BlockPos,
 	val world: World,
 	val direction: Direction,
-	val type: MultiblockType
+	val typeId: Identifier
 ) {
+
+	val chunk: Chunk
+		get() = world.getChunk(origin)
+
+	val type: MultiblockType // this seems inefficient
+		get() = MultiblockHandler.types.first {it.id == typeId}
+
 	fun validate() = type.validate(direction, origin, world)
 
 	/**

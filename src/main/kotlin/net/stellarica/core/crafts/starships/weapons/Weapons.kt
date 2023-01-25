@@ -5,6 +5,7 @@ import net.minecraft.util.math.Vec3d
 import net.stellarica.core.crafts.starships.ShipComponent
 import net.stellarica.core.crafts.starships.Starship
 import net.stellarica.core.multiblocks.MultiblockInstance
+import net.stellarica.core.multiblocks.OriginRelative
 import net.stellarica.core.util.dot
 import net.stellarica.core.util.toVec3d
 import java.lang.ref.WeakReference
@@ -17,12 +18,12 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Weapons(val ship: Starship): ShipComponent {
-	val weapons = mutableMapOf<WeaponType, MutableSet<WeakReference<MultiblockInstance>>>()
+	val weapons = mutableMapOf<WeaponType, MutableSet<OriginRelative>>()
 
 	override fun onPilot(player: ServerPlayerEntity) {
 		// this could be improved
-		ship.multiblocks.filter { it.get()?.type in WeaponType.values().map { it.multiblockType } }.forEach { multiblock ->
-			weapons.getOrPut(WeaponType.values().first{it.multiblockType == multiblock.get()?.type}) { mutableSetOf() }.add(multiblock)
+		ship.multiblocks.filter { it.type in WeaponType.values().map { it.multiblockType } }.forEach { multiblock ->
+			//weapons.getOrPut(WeaponType.values().first{it.multiblockType == multiblock.get()?.type}) { mutableSetOf() }.add(multiblock)
 		}
 		println(weapons)
 	}
@@ -31,9 +32,9 @@ class Weapons(val ship: Starship): ShipComponent {
 
 		// the direction the pilot is facing
 		val eye = ship.controller.player.rotationVector.normalize()
-
+		/*
 		weapons.forEach { (type, u) ->
-			u.mapNotNull{it.get()}.forEach { multiblock ->
+			u.forEach { multiblock ->
 				// the direction the weapon is facing
 				val direction = multiblock.getLocation(type.direction).subtract(multiblock.getLocation(type.mount)).toVec3d().normalize()
 
@@ -84,5 +85,6 @@ class Weapons(val ship: Starship): ShipComponent {
 				)
 			}
 		}
+		*/
 	}
 }

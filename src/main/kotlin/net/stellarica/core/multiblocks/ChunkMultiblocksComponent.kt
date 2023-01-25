@@ -12,6 +12,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.WorldChunk
+import net.stellarica.core.Stellarica.Companion.identifier
 import net.stellarica.core.event.multiblock.MultiblockUndetectEvent
 
 
@@ -43,7 +44,8 @@ class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingCompone
 				BlockPos(oX, oY, oZ),
 				world,
 				direction,
-				MultiblockHandler.types.first { it.id.path == type })
+				identifier(type)
+			)
 	}
 
 	override fun readFromNbt(tag: NbtCompound) {

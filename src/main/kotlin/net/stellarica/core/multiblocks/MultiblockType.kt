@@ -17,7 +17,7 @@ data class MultiblockType(
 					origin,
 					world,
 					facing,
-					this
+					this.id
 				)
 			}
 		}

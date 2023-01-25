@@ -32,7 +32,7 @@ import kotlin.system.measureTimeMillis
 open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity) {
 	val sizeLimit = 10000
 
-	var multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()
+	var multiblocks = mutableSetOf<MultiblockInstance>()
 	var detectedBlocks = mutableSetOf<BlockPos>()
 
 	var passengers = mutableSetOf<LivingEntity>()
@@ -135,8 +135,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		multiblocks.clear()
 		// this is probably slow
 		multiblocks.addAll(
-			chunks.map { MULTIBLOCKS.get(it).multiblocks }.flatten().filter { detectedBlocks.contains(it.origin) }
-				.map { WeakReference(it) })
+			chunks.map { MULTIBLOCKS.get(it).multiblocks }.flatten().filter { detectedBlocks.contains(it.origin) })
 
 		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
 	}
@@ -319,13 +318,25 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		}
 
 		// move multiblocks
-		multiblocks.map {
-			val mb = it.get() ?: return@map null
-			MULTIBLOCKS.get(world.getChunk(mb.origin)).multiblocks.remove(mb)
-			val new = mb.copy(origin = modifier(mb.origin.toVec3d()).toBlockPos())
+		multiblocks = multiblocks.map { mb ->
+
+			val new = MultiblockInstance(
+				origin = modifier(mb.origin.toVec3d()).toBlockPos(),
+				world = targetWorld,
+				direction = when (rotation) { // todo: move this to a direction.rotate() sort of thing
+					BlockRotation.CLOCKWISE_90 -> mb.direction.rotateYClockwise()
+					BlockRotation.COUNTERCLOCKWISE_90 -> mb.direction.rotateYCounterclockwise()
+					BlockRotation.NONE -> mb.direction
+					BlockRotation.CLOCKWISE_180 -> mb.direction.opposite
+				},
+				typeId = mb.typeId
+			)
+
+			MULTIBLOCKS.get(mb.chunk).multiblocks.remove(mb)
 			MULTIBLOCKS.get(targetWorld.getChunk(new.origin)).multiblocks.add(new)
+
 			return@map new
-		}
+		}.toMutableSet()
 
 		// finish up
 		movePassengers(modifier, rotation)

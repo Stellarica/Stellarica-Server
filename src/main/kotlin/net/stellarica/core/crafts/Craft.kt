@@ -302,10 +302,14 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 			// move any entities
 			if (entities.contains(current) || currentBlock.hasBlockEntity()) {
 				val entity = entities.getOrElse(current) {world.getBlockEntity(current)!!}
+
+				world.getChunk(current).removeBlockEntity(current)
+
 				(entity as BlockEntityMixin).setPos(target)
 				entity.world = targetWorld
 				entity.markDirty()
-				world.getChunk(target).setBlockEntity(entity)
+
+				targetWorld.getChunk(target).setBlockEntity(entity)
 			}
 
 			// if no other block is moving to where we were, set it to air

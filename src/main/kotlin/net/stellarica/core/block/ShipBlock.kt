@@ -29,6 +29,7 @@ class ShipBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : 
 	): ActionResult {
 		val craft = Starship(pos!!, world as ServerWorld, player as ServerPlayerEntity)
 		craft.detect()
+		if (craft.blockCount == 0) return ActionResult.FAIL // in case it didn't detect
 		craft.pilot(player)
 		craft.passengers.add(player)
 

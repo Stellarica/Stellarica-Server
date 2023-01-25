@@ -66,6 +66,7 @@ class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingCompone
 
 	override fun serverTick() {
 		// validate this chunk's multiblocks
+		// todo: why do this every tick?
 		val invalid = mutableSetOf<MultiblockInstance>()
 		multiblocks.forEach {
 			if (!it.validate()) {

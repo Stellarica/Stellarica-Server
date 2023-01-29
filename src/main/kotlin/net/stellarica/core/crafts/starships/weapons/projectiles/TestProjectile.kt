@@ -29,7 +29,6 @@ object TestProjectile: Projectile() {
 
 	override fun onHitBlock(world: ServerWorld, pos: BlockPos): Boolean {
 		world.createExplosion(null, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), 4f, false, World.ExplosionSourceType.TNT)
-		println("boom")
 		return false
 	}
 }

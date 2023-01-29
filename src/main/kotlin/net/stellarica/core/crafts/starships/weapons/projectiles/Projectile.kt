@@ -20,13 +20,12 @@ abstract class Projectile {
 		get() = range / time.toDouble()
 
 	fun shoot(shooter: Craft, pilot: ServerPlayerEntity, from: Vec3d, dir: Vec3d) {
-		println("shooting")
 		val world = shooter.world
 		var currentPos = from
 		StartServerTickEvent.listen(0) {
 			val hit = world.raycast(RaycastContext(
 				from,
-				from.add(dir.multiply(speed.toDouble())),
+				from.add(dir.multiply(speed)),
 				RaycastContext.ShapeType.OUTLINE,
 				RaycastContext.FluidHandling.ANY,
 				pilot

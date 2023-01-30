@@ -244,17 +244,20 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		callback: () -> Unit = {}
 	) {
 		// calculate new block locations
-		val targets = ConcurrentHashMap<BlockPos, BlockPos>()
+		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
 		runBlocking {
 			detectedBlocks.chunked(500).forEach { section ->
 				// chunk into sections to process parallel
 				launch(Dispatchers.Default) {
 					section.forEach { current ->
-						targets[current] = modifier(current.toVec3d()).toBlockPos()
+						targetsCHM[current] = modifier(current.toVec3d()).toBlockPos()
 					}
 				}
 			}
 		}
+
+		// possible optimization because iterating over a CHM is pain
+		val targets = targetsCHM.toMap()
 
 		// We need to get the original blockstates before we start setting blocks
 		// otherwise, if we just try to get the state as we set the block, the state might have already been set.
@@ -269,24 +272,20 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		val entities = mutableMapOf<BlockPos, BlockEntity>()
 
 		// check for collisions
-		targets.forEach { (_, target) ->
-			// todo: it's possible for detectedBlocks to contain it but not actually be detected (if the world is different)
-			val state = targetWorld.getBlockState(target)
-			if (!state.isAir && !detectedBlocks.contains(target)) {
-				sendMiniMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
-				return
-			}
-			// also use this time to get the original state of these blocks
-			if (state.hasBlockEntity()) {
-				entities[target] = targetWorld.getBlockEntity(target)!!
-			}
-			original[target] = state
-		}
-
 		// if the world we're moving to isn't the world we're coming from, the whole map of original states we got is useless
-		if (world != targetWorld) {
-			original.clear()
-			entities.clear()
+		if (world == targetWorld) {
+			targets.values.forEach { target ->
+				val state = targetWorld.getBlockState(target)
+				if (!state.isAir && !detectedBlocks.contains(target)) {
+					sendMiniMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
+					return
+				}
+				// also use this time to get the original state of these blocks
+				if (state.hasBlockEntity()) {
+					entities[target] = targetWorld.getBlockEntity(target)!!
+				}
+				original[target] = state
+			}
 		}
 
 		// iterating over twice isn't great
@@ -310,12 +309,19 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 
 				targetWorld.getChunk(target).setBlockEntity(entity)
 			}
+		}
 
-			// if no other block is moving to where we were, set it to air
-			if (current !in targets.values) {
-				setBlockFast(current, Blocks.AIR.defaultState, world)
+		if (newDetectedBlocks.size != detectedBlocks.size) {
+			println("Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!")
+		}
+		if (world == targetWorld) {
+			// set air where we were
+			detectedBlocks.removeAll(newDetectedBlocks)
+			detectedBlocks.forEach {
+				setBlockFast(it, Blocks.AIR.defaultState, world)
 			}
 		}
+		detectedBlocks = newDetectedBlocks
 
 		// move multiblocks
 		multiblocks = multiblocks.map { mb ->
@@ -340,10 +346,6 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 
 		// finish up
 		movePassengers(modifier, rotation)
-		if (newDetectedBlocks.size != detectedBlocks.size) {
-			println("Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!")
-		}
-		detectedBlocks = newDetectedBlocks
 		world = targetWorld
 		origin = modifier(origin.toVec3d()).toBlockPos()
 		callback()

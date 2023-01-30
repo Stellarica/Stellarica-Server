@@ -29,7 +29,7 @@
       },
       "fabric-datagen": {
         "adapter": "kotlin",
-        "value": "net.stellarica.core.Datagen"
+        "value": "net.stellarica.core.datagen.Datagen"
       }
     },
     "depends": [

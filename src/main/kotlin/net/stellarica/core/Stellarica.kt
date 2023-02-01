@@ -37,8 +37,6 @@ class Stellarica : DedicatedServerModInitializer {
 	override fun onInitializeServer(mod: ModContainer?) {
 		PolymerResourcePackUtils.markAsRequired()
 		PolymerResourcePackUtils.addModAssets(MODID)
-		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "block/test_block")
-
 
 		// todo: temporary code
 		val inter = Registry.register(

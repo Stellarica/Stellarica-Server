@@ -3,6 +3,7 @@ plugins {
 	kotlin("plugin.serialization") version "1.8.0"
 	java
 	alias(libs.plugins.quilt.loom)
+	alias(libs.plugins.detekt)
 }
 group = property("maven_group")!!
 version = property("version")!!
@@ -55,8 +56,24 @@ tasks {
 	compileKotlin {
 		kotlinOptions.jvmTarget = "17"
 	}
+
+
+	withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+		reports {
+			html.required.set(true) // observe findings in your browser with structure and code snippets
+			md.required.set(true) // simple Markdown format
+		}
+		jvmTarget = "17"
+	}
 }
 
 java {
 	withSourcesJar()
+	//languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+detekt {
+	buildUponDefaultConfig = true
+	allRules = false
+	config = files("$projectDir/config/detekt.yml")
 }

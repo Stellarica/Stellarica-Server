@@ -49,3 +49,4 @@ cardinal = ["cardinal_base", "cardinal_chunk"]
 
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.0.+" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.22.0" }

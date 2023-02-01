@@ -11,6 +11,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 import net.minecraft.world.chunk.Chunk
@@ -28,7 +29,7 @@ import net.stellarica.core.util.toVec3d
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
-open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity) {
+open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity, var direction: Direction) {
 	val sizeLimit = 10000
 
 	var multiblocks = mutableSetOf<MultiblockInstance>()
@@ -49,20 +50,13 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 	 */
 	fun contains(block: BlockPos?): Boolean {
 		block ?: return false
-		return detectedBlocks.contains(block) || bounds.contains(block.subtract(origin).let {
-			OriginRelative(
-				it.x,
-				it.y,
-				it.z
-			)
-		})
+		return detectedBlocks.contains(block) || bounds.contains(OriginRelative.get(block, origin, direction))
 	}
 
-	fun calculateHitbox() {
+	private fun calculateHitbox() {
 		detectedBlocks
 			.map { pos ->
-				pos.subtract(origin)
-					.let { OriginRelative(it.x, it.y, it.z) }
+				OriginRelative.get(pos, origin, direction)
 			}
 			.sortedBy { -it.y }
 			.forEach { block ->
@@ -207,7 +201,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 
 	/**
 	 * Translate the craft by [offset] blocks
-	 * @see queueChange
+	 * @see change
 	 */
 	fun move(offset: Vec3i) {
 		val change = offset.toVec3d()
@@ -222,13 +216,13 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 
 	/**
 	 * Rotate the craft and contents by [rotation]
-	 * @see queueChange
+	 * @see change
 	 */
 	fun rotate(rotation: BlockRotation) {
 		change({ current ->
 			return@change rotateCoordinates(current, origin.toVec3d(), rotation)
 		}, world, rotation) {
-			calculateHitbox() // rather than keep track of a hitbox rotation, just recacluate it when we rotate.
+			direction = direction.rotate(rotation)
 		}
 	}
 
@@ -237,7 +231,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		modifier: (Vec3d) -> Vec3d,
 		/** The world to move to */
 		targetWorld: ServerWorld,
-		/** The amount to rotate the ship by */
+		/** The amount to rotate each directional block by */
 		rotation: BlockRotation = BlockRotation.NONE,
 		/** Callback called after the craft finishes moving */
 		callback: () -> Unit = {}

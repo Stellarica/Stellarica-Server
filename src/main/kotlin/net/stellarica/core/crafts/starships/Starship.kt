@@ -3,13 +3,15 @@ package net.stellarica.core.crafts.starships
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.stellarica.core.Stellarica.Companion.ships
 import net.stellarica.core.crafts.Craft
 import net.stellarica.core.crafts.starships.weapons.Weapons
 
 
-class Starship(origin: BlockPos, world: ServerWorld, owner: ServerPlayerEntity) : Craft(origin, world, owner) {
+class Starship(origin: BlockPos, world: ServerWorld, owner: ServerPlayerEntity, direction: Direction) :
+	Craft(origin, world, owner, direction){
 	var cruiseDirection = Vec3d.ZERO!!
 	var cruiseSpeed = 0
 

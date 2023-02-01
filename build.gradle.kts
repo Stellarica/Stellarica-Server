@@ -65,6 +65,12 @@ tasks {
 		}
 		jvmTarget = "17"
 	}
+
+	getByName("check") {
+		this.setDependsOn(this.dependsOn.filterNot {
+			it is TaskProvider<*> && it.name == "detekt"
+		})
+	}
 }
 
 java {

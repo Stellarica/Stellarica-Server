@@ -64,8 +64,10 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 				0 -> ItemStack(Items.GREEN_STAINED_GLASS_PANE).also { it.setRichName("<b>Cruise") }
 				1 -> ItemStack(Items.RED_STAINED_GLASS_PANE).also { it.setRichName("<b>Stop") }
 				2 -> ItemStack(Items.YELLOW_STAINED_GLASS_PANE).also { it.setRichName("<b>Precision") }
+				3 -> ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE).also { it.setRichName(".") }
 				4 -> ItemStack(Items.BLUE_STAINED_GLASS_PANE).also { it.setRichName("<b>Left") }
 				5 -> ItemStack(Items.BLUE_STAINED_GLASS_PANE).also { it.setRichName("<b>Right") }
+				6 -> ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE).also { it.setRichName(".") }
 				7 -> ItemStack(Items.NETHER_STAR).also { it.setRichName("<b>Fire") }
 				8 -> ItemStack(Items.BARRIER).also { it.setRichName("<b>Unpilot") }
 				else -> ItemStack.EMPTY

@@ -17,7 +17,7 @@ enum class WeaponType(
 
 	private val multiblockId: Identifier
 ) {
-	TEST_WEAPON(TestProjectile, OriginRelative(3, 0, 0), PI / 8, OriginRelative(2, 0, 0),1,identifier("test_weapon"));
+	TEST_WEAPON(TestProjectile, OriginRelative(3, 0, 0), PI / 8, OriginRelative(2, 0, 0), 1, identifier("test_weapon"));
 
 	val multiblockType by lazy {
 		MultiblockHandler.types.first { it.id == multiblockId }

@@ -1,6 +1,5 @@
 package net.stellarica.core.multiblocks
 
-import net.minecraft.block.Block
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -18,7 +17,7 @@ data class MultiblockInstance(
 		get() = world.getChunk(origin)
 
 	val type: MultiblockType // this seems inefficient
-		get() = MultiblockHandler.types.first {it.id == typeId}
+		get() = MultiblockHandler.types.first { it.id == typeId }
 
 	fun validate() = type.validate(direction, origin, world)
 

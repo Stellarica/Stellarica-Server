@@ -1,7 +1,6 @@
 package net.stellarica.core.block
 
 import eu.pb4.polymer.blocks.api.BlockModelType
-import net.stellarica.core.Components.Companion.MULTIBLOCKS
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.ActionResult
@@ -9,6 +8,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.stellarica.core.Components.Companion.MULTIBLOCKS
 import net.stellarica.core.multiblocks.MultiblockHandler
 import net.stellarica.core.util.SimpleBlock
 import net.stellarica.core.util.sendRichMessage

@@ -1,23 +1,11 @@
 package net.stellarica.core.crafts.starships.weapons
 
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.math.Vec3d
 import net.stellarica.core.crafts.starships.ShipComponent
 import net.stellarica.core.crafts.starships.Starship
-import net.stellarica.core.multiblocks.MultiblockInstance
 import net.stellarica.core.multiblocks.OriginRelative
-import net.stellarica.core.util.dot
-import net.stellarica.core.util.toVec3d
-import java.lang.ref.WeakReference
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.acos
-import kotlin.math.asin
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
 
-class Weapons(val ship: Starship): ShipComponent {
+class Weapons(val ship: Starship) : ShipComponent {
 	val weapons = mutableMapOf<WeaponType, MutableSet<OriginRelative>>()
 
 	override fun onPilot(player: ServerPlayerEntity) {

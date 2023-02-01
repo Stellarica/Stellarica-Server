@@ -1,9 +1,6 @@
 package net.stellarica.core.crafts
 
-import net.stellarica.core.Components.Companion.MULTIBLOCKS
-import net.stellarica.core.mixin.BlockEntityMixin
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.minecraft.block.BlockState
@@ -18,6 +15,8 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.WorldChunk
+import net.stellarica.core.Components.Companion.MULTIBLOCKS
+import net.stellarica.core.mixin.BlockEntityMixin
 import net.stellarica.core.multiblocks.MultiblockInstance
 import net.stellarica.core.multiblocks.OriginRelative
 import net.stellarica.core.util.asDegrees
@@ -26,7 +25,6 @@ import net.stellarica.core.util.rotateCoordinates
 import net.stellarica.core.util.sendRichMessage
 import net.stellarica.core.util.toBlockPos
 import net.stellarica.core.util.toVec3d
-import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
@@ -292,7 +290,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		// iterating over twice isn't great
 		val newDetectedBlocks = mutableSetOf<BlockPos>()
 		targets.forEach { (current, target) ->
-			val currentBlock = original.getOrElse(current) {world.getBlockState(current)}
+			val currentBlock = original.getOrElse(current) { world.getBlockState(current) }
 
 			// set the block
 			setBlockFast(target, currentBlock.rotate(rotation), targetWorld)
@@ -300,7 +298,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 
 			// move any entities
 			if (entities.contains(current) || currentBlock.hasBlockEntity()) {
-				val entity = entities.getOrElse(current) {world.getBlockEntity(current)!!}
+				val entity = entities.getOrElse(current) { world.getBlockEntity(current)!! }
 
 				world.getChunk(current).removeBlockEntity(current)
 

@@ -1,8 +1,8 @@
 package net.stellarica.core.multiblocks
 
-import net.stellarica.core.Components.Companion.MULTIBLOCKS
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.stellarica.core.Components.Companion.MULTIBLOCKS
 import net.stellarica.core.event.multiblock.MultiblockDetectEvent
 
 object MultiblockHandler {

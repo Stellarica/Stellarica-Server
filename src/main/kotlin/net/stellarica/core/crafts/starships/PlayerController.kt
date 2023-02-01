@@ -28,6 +28,7 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 				ship.cruiseDirection = player.rotationVector.normalize()
 				ship.cruiseSpeed = 5
 			}
+
 			1 -> ship.cruiseSpeed = 0
 			2 -> ship.move(player.rotationVector.multiply(1.5).toVec3i())
 			4 -> ship.rotate(BlockRotation.COUNTERCLOCKWISE_90)
@@ -37,6 +38,7 @@ class PlayerController(private val ship: Starship, private val pilot: ServerPlay
 					(it as Weapons).fire()
 				}
 			}
+
 			8 -> ship.unpilot()
 		}
 		return super.onClick(index, type, action, element)

@@ -23,13 +23,15 @@ abstract class Projectile {
 		val world = shooter.world
 		var currentPos = from
 		StartServerTickEvent.listen(0) {
-			val hit = world.raycast(RaycastContext(
-				from,
-				from.add(dir.multiply(speed)),
-				RaycastContext.ShapeType.OUTLINE,
-				RaycastContext.FluidHandling.ANY,
-				pilot
-			))
+			val hit = world.raycast(
+				RaycastContext(
+					from,
+					from.add(dir.multiply(speed)),
+					RaycastContext.ShapeType.OUTLINE,
+					RaycastContext.FluidHandling.ANY,
+					pilot
+				)
+			)
 
 			// todo: handle entity raycast
 			if (hit.type == HitResult.Type.BLOCK) {
@@ -39,7 +41,7 @@ abstract class Projectile {
 				if (craft != null) {
 					if (craft != shooter && !onHitCraft(pos, craft)) this.unregister()
 				} else {
-					if(!onHitBlock(world, pos)) this.unregister()
+					if (!onHitBlock(world, pos)) this.unregister()
 				}
 			} else {
 				currentPos = currentPos.add(dir.multiply(onTick(world, currentPos, dir) ?: speed))

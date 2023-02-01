@@ -21,6 +21,7 @@ import net.minecraft.world.chunk.WorldChunk
 import net.stellarica.core.multiblocks.MultiblockInstance
 import net.stellarica.core.multiblocks.OriginRelative
 import net.stellarica.core.util.asDegrees
+import net.stellarica.core.util.rotate
 import net.stellarica.core.util.rotateCoordinates
 import net.stellarica.core.util.sendRichMessage
 import net.stellarica.core.util.toBlockPos
@@ -329,12 +330,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3d()).toBlockPos(),
 				world = targetWorld,
-				direction = when (rotation) { // todo: move this to a direction.rotate() sort of thing
-					BlockRotation.CLOCKWISE_90 -> mb.direction.rotateYClockwise()
-					BlockRotation.COUNTERCLOCKWISE_90 -> mb.direction.rotateYCounterclockwise()
-					BlockRotation.NONE -> mb.direction
-					BlockRotation.CLOCKWISE_180 -> mb.direction.opposite
-				},
+				direction = mb.direction.rotate(rotation),
 				typeId = mb.typeId
 			)
 

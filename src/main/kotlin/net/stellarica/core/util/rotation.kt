@@ -1,6 +1,7 @@
 package net.stellarica.core.util
 
 import net.minecraft.util.BlockRotation
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import kotlin.math.cos
 import kotlin.math.sin
@@ -31,3 +32,10 @@ val BlockRotation.asRadians: Double
 
 val BlockRotation.asDegrees: Double
 	get() = Math.toDegrees(asRadians) // :iea:
+
+fun Direction.rotate(rot: BlockRotation) = when (rot) {
+	BlockRotation.NONE -> this
+	BlockRotation.CLOCKWISE_90 -> this.rotateYClockwise()
+	BlockRotation.CLOCKWISE_180 -> this.opposite
+	BlockRotation.COUNTERCLOCKWISE_90 -> this.rotateYCounterclockwise()
+}

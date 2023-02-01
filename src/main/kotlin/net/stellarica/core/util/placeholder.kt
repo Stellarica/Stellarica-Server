@@ -11,3 +11,5 @@ fun PlayerEntity.sendRichMessage(message: String, actionBar: Boolean = false) {
 fun ItemStack.setRichName(name: String) {
 	this.setCustomName(TextParserUtils.formatText(name))
 }
+
+fun String.toRichText() = TextParserUtils.formatText(this)

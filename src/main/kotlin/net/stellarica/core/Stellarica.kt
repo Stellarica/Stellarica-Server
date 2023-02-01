@@ -52,11 +52,7 @@ class Stellarica : DedicatedServerModInitializer {
 		val ship = Registry.register(
 			Registries.BLOCK,
 			identifier("ship_block"),
-			ShipBlock(
-				QuiltBlockSettings.copy(Blocks.IRON_BLOCK),
-				BlockModelType.FULL_BLOCK,
-				"block/ship_block"
-			)
+			ShipBlock()
 		)
 		registerSimpleBlockItem(ship, "ship_block")
 		MultiblockHandler.types.add(

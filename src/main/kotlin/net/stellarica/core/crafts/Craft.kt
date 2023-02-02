@@ -32,7 +32,7 @@ import kotlin.system.measureTimeMillis
 open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity, var direction: Direction) {
 	val sizeLimit = 10000
 
-	var multiblocks = mutableSetOf<MultiblockInstance>()
+	var multiblocks = mutableSetOf<OriginRelative>()
 	var detectedBlocks = mutableSetOf<BlockPos>()
 
 	var passengers = mutableSetOf<LivingEntity>()
@@ -127,8 +127,12 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		// Detect all multiblocks
 		multiblocks.clear()
 		// this is probably slow
-		multiblocks.addAll(
-			chunks.map { MULTIBLOCKS.get(it).multiblocks }.flatten().filter { detectedBlocks.contains(it.origin) })
+		multiblocks.addAll(chunks
+			.map { MULTIBLOCKS.get(it).multiblocks }
+			.flatten()
+			.filter { detectedBlocks.contains(it.origin) }
+			.map { OriginRelative.get(it.origin, origin, direction)}
+		)
 
 		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
 	}
@@ -317,7 +321,9 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		detectedBlocks = newDetectedBlocks
 
 		// move multiblocks
-		multiblocks = multiblocks.map { mb ->
+		multiblocks.forEach { pos ->
+			val origin = pos.getBlockPos(origin, direction)
+			val mb = MULTIBLOCKS[world.getChunk(origin)].multiblocks.first { it.origin == origin }
 
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3d()).toBlockPos(),
@@ -328,9 +334,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 
 			MULTIBLOCKS.get(mb.chunk).multiblocks.remove(mb)
 			MULTIBLOCKS.get(targetWorld.getChunk(new.origin)).multiblocks.add(new)
-
-			return@map new
-		}.toMutableSet()
+		}
 
 		// finish up
 		movePassengers(modifier, rotation)

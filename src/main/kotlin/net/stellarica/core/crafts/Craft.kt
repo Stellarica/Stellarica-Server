@@ -30,12 +30,13 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
 open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: ServerPlayerEntity, var direction: Direction) {
-	val sizeLimit = 10000
+	companion object {
+		const val sizeLimit = 10000
+	}
 
 	var multiblocks = mutableSetOf<OriginRelative>()
-	var detectedBlocks = mutableSetOf<BlockPos>()
-
 	var passengers = mutableSetOf<LivingEntity>()
+	private var detectedBlocks = mutableSetOf<BlockPos>()
 
 	val blockCount: Int
 		get() = detectedBlocks.size
@@ -67,75 +68,6 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 			}
 	}
 
-	fun detect() {
-		var nextBlocksToCheck = detectedBlocks
-		nextBlocksToCheck.add(origin)
-		detectedBlocks = mutableSetOf()
-		val checkedBlocks = nextBlocksToCheck.toMutableSet()
-
-		val startTime = System.currentTimeMillis()
-
-		val chunks = mutableSetOf<Chunk>()
-
-		while (nextBlocksToCheck.size > 0) {
-			val blocksToCheck = nextBlocksToCheck
-			nextBlocksToCheck = mutableSetOf()
-
-			for (currentBlock in blocksToCheck) {
-
-				if (undetectableBlocks.contains(world.getBlockState(currentBlock).block)) continue
-
-				if (detectedBlocks.size > sizeLimit) {
-					owner.sendRichMessage("<gold>Detection limit reached. (${sizeLimit} blocks)")
-					nextBlocksToCheck.clear()
-					detectedBlocks.clear()
-					break
-				}
-
-				detectedBlocks.add(currentBlock)
-				chunks.add(world.getChunk(currentBlock))
-
-				// Slightly condensed from MSP's nonsense, but this could be improved
-				for (x in -1..1) {
-					for (y in -1..1) {
-						for (z in -1..1) {
-							if (x == y && z == y && y == 0) continue
-							val block = currentBlock.add(x, y, z)
-							if (!checkedBlocks.contains(block)) {
-								checkedBlocks.add(block)
-								nextBlocksToCheck.add(block)
-							}
-						}
-					}
-				}
-			}
-		}
-
-		val elapsed = System.currentTimeMillis() - startTime
-		owner.sendRichMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
-		owner.sendRichMessage(
-			"<gray>Detected ${detectedBlocks.size} blocks in ${elapsed}ms. " +
-					"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
-		)
-		owner.sendRichMessage(
-			"<gray>Calculated Hitbox in ${
-				measureTimeMillis {
-					calculateHitbox()
-				}
-			}ms. (${bounds.size} blocks)")
-
-		// Detect all multiblocks
-		multiblocks.clear()
-		// this is probably slow
-		multiblocks.addAll(chunks
-			.map { MULTIBLOCKS.get(it).multiblocks }
-			.flatten()
-			.filter { detectedBlocks.contains(it.origin) }
-			.map { OriginRelative.get(it.origin, origin, direction)}
-		)
-
-		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
-	}
 
 	fun movePassengers(offset: (Vec3d) -> Vec3d, rotation: BlockRotation) {
 		passengers.forEach {
@@ -176,31 +108,12 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		}
 	}
 
-	fun sendMiniMessage(message: String) {
+	fun sendRichMessage(message: String) {
 		passengers.forEach {
 			if (it is ServerPlayerEntity) {
 				it.sendRichMessage(message)
 			}
 		}
-	}
-
-	private fun setBlockFast(pos: BlockPos, state: BlockState, world: ServerWorld) {
-		val chunk = world.getChunk(pos) as WorldChunk
-		val chunkSection = (pos.y shr 4) - chunk.bottomSectionCoord
-		var section = chunk.sectionArray[chunkSection]
-		if (section == null) {
-			// Put a GLASS block to initialize the section. It will be replaced next with the real block.
-			chunk.setBlockState(pos, Blocks.GLASS.defaultState, false)
-			section = chunk.sectionArray[chunkSection]
-		}
-		val oldState = section!!.getBlockState(pos.x and 15, pos.y and 15, pos.z and 15)
-		if (oldState == state) return //Block is already of correct type and data, don't overwrite
-
-		section.setBlockState(pos.x and 15, pos.y and 15, pos.z and 15, state)
-		world.updateListeners(pos, oldState, state, 3)
-		// world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
-		//todo: LIGHTING IS FOR CHUMPS!
-		chunk.setNeedsSaving(true)
 	}
 
 	/**
@@ -273,14 +186,15 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		if (world == targetWorld) {
 			targets.values.forEach { target ->
 				val state = targetWorld.getBlockState(target)
+
 				if (!state.isAir && !detectedBlocks.contains(target)) {
-					sendMiniMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
+					sendRichMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
 					return
 				}
+
 				// also use this time to get the original state of these blocks
-				if (state.hasBlockEntity()) {
-					entities[target] = targetWorld.getBlockEntity(target)!!
-				}
+				if (state.hasBlockEntity()) entities[target] = targetWorld.getBlockEntity(target)!!
+
 				original[target] = state
 			}
 		}
@@ -308,30 +222,25 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 			}
 		}
 
-		if (newDetectedBlocks.size != detectedBlocks.size) {
+		if (newDetectedBlocks.size != detectedBlocks.size)
 			println("Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!")
-		}
+
 		if (world == targetWorld) {
 			// set air where we were
 			detectedBlocks.removeAll(newDetectedBlocks)
-			detectedBlocks.forEach {
-				setBlockFast(it, Blocks.AIR.defaultState, world)
-			}
+			detectedBlocks.forEach { setBlockFast(it, Blocks.AIR.defaultState, world) }
 		}
 		detectedBlocks = newDetectedBlocks
 
 		// move multiblocks
 		multiblocks.forEach { pos ->
-			val origin = pos.getBlockPos(origin, direction)
-			val mb = MULTIBLOCKS[world.getChunk(origin)].multiblocks.first { it.origin == origin }
-
+			val mb = getMultiblock(pos)
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3d()).toBlockPos(),
 				world = targetWorld,
 				direction = mb.direction.rotate(rotation),
 				typeId = mb.typeId
 			)
-
 			MULTIBLOCKS.get(mb.chunk).multiblocks.remove(mb)
 			MULTIBLOCKS.get(targetWorld.getChunk(new.origin)).multiblocks.add(new)
 		}
@@ -341,5 +250,100 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		world = targetWorld
 		origin = modifier(origin.toVec3d()).toBlockPos()
 		callback()
+	}
+
+
+	fun detect() {
+		var nextBlocksToCheck = detectedBlocks
+		nextBlocksToCheck.add(origin)
+		detectedBlocks = mutableSetOf()
+		val checkedBlocks = nextBlocksToCheck.toMutableSet()
+
+		val startTime = System.currentTimeMillis()
+
+		val chunks = mutableSetOf<Chunk>()
+
+		while (nextBlocksToCheck.size > 0) {
+			val blocksToCheck = nextBlocksToCheck
+			nextBlocksToCheck = mutableSetOf()
+
+			for (currentBlock in blocksToCheck) {
+
+				if (undetectableBlocks.contains(world.getBlockState(currentBlock).block)) continue
+
+				if (detectedBlocks.size > Companion.sizeLimit) {
+					owner.sendRichMessage("<gold>Detection limit reached. (${Companion.sizeLimit} blocks)")
+					nextBlocksToCheck.clear()
+					detectedBlocks.clear()
+					break
+				}
+
+				detectedBlocks.add(currentBlock)
+				chunks.add(world.getChunk(currentBlock))
+
+				// Slightly condensed from MSP's nonsense, but this could be improved
+				for (x in -1..1) {
+					for (y in -1..1) {
+						for (z in -1..1) {
+							if (x == y && z == y && y == 0) continue
+							val block = currentBlock.add(x, y, z)
+							if (!checkedBlocks.contains(block)) {
+								checkedBlocks.add(block)
+								nextBlocksToCheck.add(block)
+							}
+						}
+					}
+				}
+			}
+		}
+
+		val elapsed = System.currentTimeMillis() - startTime
+		owner.sendRichMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
+		owner.sendRichMessage(
+			"<gray>Detected ${detectedBlocks.size} blocks in ${elapsed}ms. " +
+					"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
+		)
+		owner.sendRichMessage(
+			"<gray>Calculated Hitbox in ${
+				measureTimeMillis {
+					calculateHitbox()
+				}
+			}ms. (${bounds.size} blocks)")
+
+		// Detect all multiblocks
+		multiblocks.clear()
+		// this is probably slow
+		multiblocks.addAll(chunks
+			.map { MULTIBLOCKS.get(it).multiblocks }
+			.flatten()
+			.filter { detectedBlocks.contains(it.origin) }
+			.map { OriginRelative.get(it.origin, origin, direction)}
+		)
+
+		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
+	}
+
+	private fun setBlockFast(pos: BlockPos, state: BlockState, world: ServerWorld) {
+		val chunk = world.getChunk(pos) as WorldChunk
+		val chunkSection = (pos.y shr 4) - chunk.bottomSectionCoord
+		var section = chunk.sectionArray[chunkSection]
+		if (section == null) {
+			// Put a GLASS block to initialize the section. It will be replaced next with the real block.
+			chunk.setBlockState(pos, Blocks.GLASS.defaultState, false)
+			section = chunk.sectionArray[chunkSection]
+		}
+		val oldState = section!!.getBlockState(pos.x and 15, pos.y and 15, pos.z and 15)
+		if (oldState == state) return //Block is already of correct type and data, don't overwrite
+
+		section.setBlockState(pos.x and 15, pos.y and 15, pos.z and 15, state)
+		world.updateListeners(pos, oldState, state, 3)
+		// world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
+		//todo: LIGHTING IS FOR CHUMPS!
+		chunk.setNeedsSaving(true)
+	}
+
+	private fun getMultiblock(pos: OriginRelative): MultiblockInstance {
+		val origin = pos.getBlockPos(origin, direction)
+		return MULTIBLOCKS[world.getChunk(origin)].multiblocks.first { it.origin == origin }
 	}
 }

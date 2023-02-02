@@ -1,4 +1,4 @@
-package net.stellarica.core.block
+package net.stellarica.core.blocks
 
 import eu.pb4.polymer.blocks.api.BlockModelType
 import net.minecraft.block.BlockState
@@ -8,10 +8,10 @@ import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import net.stellarica.core.Components.Companion.MULTIBLOCKS
+import net.stellarica.core.components.Components.Companion.MULTIBLOCKS
 import net.stellarica.core.multiblocks.MultiblockHandler
-import net.stellarica.core.util.SimpleBlock
-import net.stellarica.core.util.sendRichMessage
+import net.stellarica.core.utils.SimpleBlock
+import net.stellarica.core.utils.sendRichMessage
 
 class InterfaceBlock(settings: Settings?, type: BlockModelType?, modelId: String?) : SimpleBlock(
 	settings, type,
@@ -35,7 +35,7 @@ class InterfaceBlock(settings: Settings?, type: BlockModelType?, modelId: String
 		if (mb != null) {
 			player!!.sendRichMessage("<green>Detected ${mb.type.id}", true)
 		} else {
-			player!!.sendRichMessage("<red>No multiblock detected", true)
+			player!!.sendRichMessage("<red>No multiblocks detected", true)
 		}
 		return ActionResult.SUCCESS
 	}

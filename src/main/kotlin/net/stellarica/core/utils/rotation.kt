@@ -1,4 +1,4 @@
-package net.stellarica.core.util
+package net.stellarica.core.utils
 
 import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.Direction

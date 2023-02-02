@@ -11,7 +11,7 @@ class Weapons(val ship: Starship) : ShipComponent {
 	override fun onPilot(player: ServerPlayerEntity) {
 		// this could be improved
 		ship.multiblocks.filter { it.type in WeaponType.values().map { it.multiblockType } }.forEach { multiblock ->
-			//weapons.getOrPut(WeaponType.values().first{it.multiblockType == multiblock.get()?.type}) { mutableSetOf() }.add(multiblock)
+			//weapons.getOrPut(WeaponType.values().first{it.multiblockType == multiblocks.get()?.type}) { mutableSetOf() }.add(multiblocks)
 		}
 		println(weapons)
 	}
@@ -22,9 +22,9 @@ class Weapons(val ship: Starship) : ShipComponent {
 		val eye = ship.controller.player.rotationVector.normalize()
 		/*
 		weapons.forEach { (type, u) ->
-			u.forEach { multiblock ->
+			u.forEach { multiblocks ->
 				// the direction the weapon is facing
-				val direction = multiblock.getLocation(type.direction).subtract(multiblock.getLocation(type.mount)).toVec3d().normalize()
+				val direction = multiblocks.getLocation(type.direction).subtract(multiblocks.getLocation(type.mount)).toVec3d().normalize()
 
 				// if the angleBetween (in radians) is less than the type's cone, fire
 				val angle = acos((eye.dot(direction) / (eye.length() * direction.length())).coerceIn(-1.0, 1.0))
@@ -33,7 +33,7 @@ class Weapons(val ship: Starship) : ShipComponent {
 					type.projectile.shoot(
 						ship,
 						ship.controller.player,
-						multiblock.getLocation(type.mount).toVec3d().add(0.5, 0.5, 0.5).add(eye),
+						multiblocks.getLocation(type.mount).toVec3d().add(0.5, 0.5, 0.5).add(eye),
 						eye
 					)
 				}
@@ -68,7 +68,7 @@ class Weapons(val ship: Starship) : ShipComponent {
 				type.projectile.shoot(
 					ship,
 					ship.controller.player,
-					multiblock.getLocation(type.mount).toVec3d().add(0.5, 0.5, 0.5).add(dir),
+					multiblocks.getLocation(type.mount).toVec3d().add(0.5, 0.5, 0.5).add(dir),
 					dir
 				)
 			}

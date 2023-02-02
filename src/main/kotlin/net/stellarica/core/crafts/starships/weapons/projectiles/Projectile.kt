@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.RaycastContext
 import net.stellarica.core.Stellarica.Companion.ships
 import net.stellarica.core.crafts.Craft
-import net.stellarica.core.util.toBlockPos
+import net.stellarica.core.utils.toBlockPos
 import net.stellarica.oxidizer.event.Event
 import net.stellarica.oxidizer.event.server.StartServerTickEvent
 
@@ -70,7 +70,7 @@ abstract class Projectile {
 	abstract fun onHitEntity(entity: LivingEntity): Boolean
 
 	/**
-	 * Called when the projectile hits a block
+	 * Called when the projectile hits a blocks
 	 * @return whether to continue moving
 	 */
 	abstract fun onHitBlock(world: ServerWorld, pos: BlockPos): Boolean

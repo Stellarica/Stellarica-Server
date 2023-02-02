@@ -2,7 +2,7 @@ package net.stellarica.core.commands
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.minecraft.server.command.ServerCommandSource
-import net.stellarica.core.util.toRichText
+import net.stellarica.core.utils.toRichText
 import org.quiltmc.qsl.command.api.CommandRegistrationCallback
 
 fun registerMiscCommands() {

@@ -1,4 +1,4 @@
-package net.stellarica.core.util
+package net.stellarica.core.utils
 
 import eu.pb4.polymer.blocks.api.BlockModelType
 import eu.pb4.polymer.blocks.api.PolymerBlockModel

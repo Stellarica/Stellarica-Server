@@ -13,7 +13,7 @@ import net.minecraft.world.World
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.WorldChunk
 import net.stellarica.core.Stellarica.Companion.identifier
-import net.stellarica.core.event.multiblock.MultiblockUndetectEvent
+import net.stellarica.core.event.multiblocks.MultiblockUndetectEvent
 
 
 class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingComponent {

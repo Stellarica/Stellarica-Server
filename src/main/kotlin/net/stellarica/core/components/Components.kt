@@ -1,4 +1,4 @@
-package net.stellarica.core
+package net.stellarica.core.components
 
 import dev.onyxstudios.cca.api.v3.chunk.ChunkComponentFactoryRegistry
 import dev.onyxstudios.cca.api.v3.chunk.ChunkComponentInitializer
@@ -15,6 +15,6 @@ class Components : ChunkComponentInitializer {
 	}
 
 	override fun registerChunkComponentFactories(registry: ChunkComponentFactoryRegistry) {
-		registry.register(net.stellarica.core.Components.Companion.MULTIBLOCKS) { ChunkMultiblocksComponent(it) }
+		registry.register(MULTIBLOCKS) { ChunkMultiblocksComponent(it) }
 	}
 }

@@ -8,15 +8,15 @@ import net.minecraft.item.Item
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
-import net.stellarica.core.block.InterfaceBlock
-import net.stellarica.core.block.ShipBlock
+import net.stellarica.core.blocks.InterfaceBlock
+import net.stellarica.core.blocks.ShipBlock
 import net.stellarica.core.commands.registerMiscCommands
 import net.stellarica.core.crafts.starships.Starship
 import net.stellarica.core.multiblocks.MultiblockHandler
 import net.stellarica.core.multiblocks.MultiblockType
 import net.stellarica.core.multiblocks.OriginRelative
-import net.stellarica.core.util.SimpleBlock
-import net.stellarica.core.util.SimpleBlockItem
+import net.stellarica.core.utils.SimpleBlock
+import net.stellarica.core.utils.SimpleBlockItem
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.server.DedicatedServerModInitializer
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings
@@ -45,7 +45,7 @@ class Stellarica : DedicatedServerModInitializer {
 			InterfaceBlock(
 				QuiltBlockSettings.copy(Blocks.IRON_BLOCK),
 				BlockModelType.FULL_BLOCK,
-				"block/interface_block"
+				"blocks/interface_block"
 			)
 		)
 		registerSimpleBlockItem(inter, "interface_block")
@@ -93,7 +93,7 @@ class Stellarica : DedicatedServerModInitializer {
 		val block = Registry.register(
 			Registries.BLOCK,
 			ident,
-			SimpleBlock(QuiltBlockSettings.copy(Blocks.DIAMOND_BLOCK), type, "block/$id")
+			SimpleBlock(QuiltBlockSettings.copy(Blocks.DIAMOND_BLOCK), type, "blocks/$id")
 		)
 		val item = registerSimpleBlockItem(block, id)
 		return Pair(block, item)
@@ -104,7 +104,7 @@ class Stellarica : DedicatedServerModInitializer {
 		val item = Registry.register<Item, Item>(
 			Registries.ITEM,
 			ident,
-			SimpleBlockItem(QuiltItemSettings(), block, "block/$id")
+			SimpleBlockItem(QuiltItemSettings(), block, "blocks/$id")
 		)
 		return item
 	}

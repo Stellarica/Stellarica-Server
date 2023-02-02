@@ -1,4 +1,4 @@
-package net.stellarica.core.util
+package net.stellarica.core.utils
 
 enum class EventPriority {
 	HIGHEST,

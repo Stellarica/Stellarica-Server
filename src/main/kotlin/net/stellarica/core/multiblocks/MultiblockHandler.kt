@@ -2,8 +2,8 @@ package net.stellarica.core.multiblocks
 
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import net.stellarica.core.Components.Companion.MULTIBLOCKS
-import net.stellarica.core.event.multiblock.MultiblockDetectEvent
+import net.stellarica.core.components.Components.Companion.MULTIBLOCKS
+import net.stellarica.core.event.multiblocks.MultiblockDetectEvent
 
 object MultiblockHandler {
 	val types = mutableListOf<MultiblockType>()

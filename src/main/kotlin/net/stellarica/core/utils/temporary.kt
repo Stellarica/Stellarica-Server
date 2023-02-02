@@ -1,4 +1,4 @@
-package net.stellarica.core.util
+package net.stellarica.core.utils
 
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d

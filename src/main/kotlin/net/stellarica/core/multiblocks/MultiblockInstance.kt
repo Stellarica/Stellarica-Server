@@ -33,7 +33,7 @@ data class MultiblockInstance(
 
 
 	/**
-	 * @return whether this contains a block at [loc].
+	 * @return whether this contains a blocks at [loc].
 	 * Does not take into account world
 	 */
 	fun contains(loc: BlockPos): Boolean {

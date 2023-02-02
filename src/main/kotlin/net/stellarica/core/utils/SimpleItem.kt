@@ -1,4 +1,4 @@
-package net.stellarica.core.util
+package net.stellarica.core.utils
 
 import eu.pb4.polymer.core.api.item.PolymerItem
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils

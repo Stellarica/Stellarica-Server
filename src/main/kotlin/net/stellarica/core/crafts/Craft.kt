@@ -16,16 +16,16 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.WorldChunk
-import net.stellarica.core.Components.Companion.MULTIBLOCKS
+import net.stellarica.core.components.Components.Companion.MULTIBLOCKS
 import net.stellarica.core.mixin.BlockEntityMixin
 import net.stellarica.core.multiblocks.MultiblockInstance
 import net.stellarica.core.multiblocks.OriginRelative
-import net.stellarica.core.util.asDegrees
-import net.stellarica.core.util.rotate
-import net.stellarica.core.util.rotateCoordinates
-import net.stellarica.core.util.sendRichMessage
-import net.stellarica.core.util.toBlockPos
-import net.stellarica.core.util.toVec3d
+import net.stellarica.core.utils.asDegrees
+import net.stellarica.core.utils.rotate
+import net.stellarica.core.utils.rotateCoordinates
+import net.stellarica.core.utils.sendRichMessage
+import net.stellarica.core.utils.toBlockPos
+import net.stellarica.core.utils.toVec3d
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
@@ -144,16 +144,16 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 	}
 
 	private fun change(
-		/** The transformation to apply to each block in the craft */
+		/** The transformation to apply to each blocks in the craft */
 		modifier: (Vec3d) -> Vec3d,
 		/** The world to move to */
 		targetWorld: ServerWorld,
-		/** The amount to rotate each directional block by */
+		/** The amount to rotate each directional blocks by */
 		rotation: BlockRotation = BlockRotation.NONE,
 		/** Callback called after the craft finishes moving */
 		callback: () -> Unit = {}
 	) {
-		// calculate new block locations
+		// calculate new blocks locations
 		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
 		runBlocking {
 			detectedBlocks.chunked(500).forEach { section ->
@@ -170,12 +170,12 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		val targets = targetsCHM.toMap()
 
 		// We need to get the original blockstates before we start setting blocks
-		// otherwise, if we just try to get the state as we set the block, the state might have already been set.
-		// Consider moving a block from b to c. If a has already been moved to b, we don't want to copy a to c.
+		// otherwise, if we just try to get the state as we set the blocks, the state might have already been set.
+		// Consider moving a blocks from b to c. If a has already been moved to b, we don't want to copy a to c.
 		// see https://discord.com/channels/1038493335679156425/1038504764356427877/1066184457264046170
 		//
 		// However, we don't need to go and get the states of the current blocks, as if it isn't in
-		// the target blocks, it won't be overwritten, so we can just get it when it comes time to set the block
+		// the target blocks, it won't be overwritten, so we can just get it when it comes time to set the blocks
 		//
 		// This solution ~~may not be~~ isn't the most efficient, but it works
 		val original = mutableMapOf<BlockPos, BlockState>()
@@ -204,7 +204,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		targets.forEach { (current, target) ->
 			val currentBlock = original.getOrElse(current) { world.getBlockState(current) }
 
-			// set the block
+			// set the blocks
 			setBlockFast(target, currentBlock.rotate(rotation), targetWorld)
 			newDetectedBlocks.add(target)
 
@@ -328,7 +328,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		val chunkSection = (pos.y shr 4) - chunk.bottomSectionCoord
 		var section = chunk.sectionArray[chunkSection]
 		if (section == null) {
-			// Put a GLASS block to initialize the section. It will be replaced next with the real block.
+			// Put a GLASS blocks to initialize the section. It will be replaced next with the real blocks.
 			chunk.setBlockState(pos, Blocks.GLASS.defaultState, false)
 			section = chunk.sectionArray[chunkSection]
 		}

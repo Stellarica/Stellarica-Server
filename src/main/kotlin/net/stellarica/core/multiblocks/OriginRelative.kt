@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 
 /**
- * Coordinates relative to the origin of a multiblock
+ * Coordinates relative to the origin of a multiblocks
  */
 data class OriginRelative(
 	/**

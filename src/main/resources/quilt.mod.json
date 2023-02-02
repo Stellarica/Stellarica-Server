@@ -25,7 +25,7 @@
       },
       "cardinal-components": {
         "adapter": "kotlin",
-        "value": "net.stellarica.core.Components"
+        "value": "net.stellarica.core.components.Components"
       }
     },
     "depends": [

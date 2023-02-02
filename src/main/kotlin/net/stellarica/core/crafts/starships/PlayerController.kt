@@ -9,8 +9,8 @@ import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.BlockRotation
 import net.stellarica.core.crafts.starships.weapons.Weapons
-import net.stellarica.core.util.setRichName
-import net.stellarica.core.util.toVec3i
+import net.stellarica.core.utils.setRichName
+import net.stellarica.core.utils.toVec3i
 
 
 class PlayerController(private val ship: Starship, private val pilot: ServerPlayerEntity) : HotbarGui(pilot) {

@@ -1,4 +1,4 @@
-package net.stellarica.core.util
+package net.stellarica.core.utils
 
 import eu.pb4.placeholders.api.TextParserUtils
 import net.minecraft.entity.player.PlayerEntity

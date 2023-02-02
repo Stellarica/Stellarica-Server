@@ -1,6 +1,5 @@
-package net.stellarica.core.block
+package net.stellarica.core.blocks
 
-import eu.pb4.polymer.blocks.api.BlockModelType
 import eu.pb4.polymer.core.api.block.PolymerBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -16,7 +15,6 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.stellarica.core.crafts.starships.Starship
-import net.stellarica.core.util.SimpleBlock
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings
 
 // TODO: delete this whole thing: it's temporary

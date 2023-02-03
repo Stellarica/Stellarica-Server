@@ -11,6 +11,7 @@ polymer = "0.3.8+1.19.3"
 placeholder = "2.0.0-pre.3+1.19.3"
 sgui = "1.2.1+1.19.3"
 cardinal = "5.1.0"
+silk = "1.9.5"
 
 oxidizer = "0.1.0-SNAPSHOT"
 
@@ -41,11 +42,17 @@ kotlin_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", 
 
 oxidizer = { module = "net.stellarica:oxidizer", version.ref = "oxidizer" }
 
+silk_core = { module = "net.silkmc:silk-core", version.ref = "silk" }
+silk_nbt = { module = "net.silkmc:silk-nbt", version.ref = "silk" }
+silk_persistence = { module = "net.silkmc:silk-persistence", version.ref = "silk" }
+silk_commands = { module = "net.silkmc:silk-commands", version.ref = "silk" }
+
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]
 quilted_fabric_api = ["quilted_fabric_api", "quilted_fabric_api_deprecated"]
 polymer = ["polymer_core", "polymer_resource_pack", "polymer_blocks", "polymer_autohost"]
 cardinal = ["cardinal_base", "cardinal_chunk"]
+silk = ["silk_commands", "silk_persistence", "silk_core", "silk_nbt"]
 
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.0.+" }

@@ -37,6 +37,9 @@ dependencies {
 	modImplementation(libs.oxidizer)
 	include(libs.oxidizer)
 
+	modImplementation(libs.bundles.silk)
+	include(libs.bundles.silk)
+
 	implementation(libs.kotlin.coroutines)
 }
 

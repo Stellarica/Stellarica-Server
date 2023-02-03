@@ -342,7 +342,7 @@ open class Craft(var origin: BlockPos, var world: ServerWorld, var owner: Server
 		chunk.setNeedsSaving(true)
 	}
 
-	private fun getMultiblock(pos: OriginRelative): MultiblockInstance {
+	fun getMultiblock(pos: OriginRelative): MultiblockInstance {
 		val origin = pos.getBlockPos(origin, direction)
 		return MULTIBLOCKS[world.getChunk(origin)].multiblocks.first { it.origin == origin }
 	}

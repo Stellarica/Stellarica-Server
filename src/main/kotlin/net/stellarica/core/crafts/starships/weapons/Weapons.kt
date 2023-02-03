@@ -1,28 +1,37 @@
 package net.stellarica.core.crafts.starships.weapons
 
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.util.math.Vec3d
 import net.stellarica.core.crafts.starships.ShipComponent
 import net.stellarica.core.crafts.starships.Starship
 import net.stellarica.core.multiblocks.OriginRelative
+import net.stellarica.core.utils.dot
+import net.stellarica.core.utils.toVec3d
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.acos
+import kotlin.math.asin
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 class Weapons(val ship: Starship) : ShipComponent {
 	val weapons = mutableMapOf<WeaponType, MutableSet<OriginRelative>>()
 
 	override fun onPilot(player: ServerPlayerEntity) {
-		// this could be improved
-		ship.multiblocks.filter { it.type in WeaponType.values().map { it.multiblockType } }.forEach { multiblock ->
-			//weapons.getOrPut(WeaponType.values().first{it.multiblockType == multiblocks.get()?.type}) { mutableSetOf() }.add(multiblocks)
+		ship.multiblocks.forEach { pos ->
+			val type = ship.getMultiblock(pos).type
+			WeaponType.values().firstOrNull {it.multiblockType == type}?.let{
+				weapons.getOrPut(it) { mutableSetOf() }.add(pos)
+			}
 		}
-		println(weapons)
 	}
 
 	fun fire() {
-
 		// the direction the pilot is facing
 		val eye = ship.controller.player.rotationVector.normalize()
-		/*
 		weapons.forEach { (type, u) ->
-			u.forEach { multiblocks ->
+			u.map { ship.getMultiblock(it) }.forEach { multiblocks ->
 				// the direction the weapon is facing
 				val direction = multiblocks.getLocation(type.direction).subtract(multiblocks.getLocation(type.mount)).toVec3d().normalize()
 
@@ -63,7 +72,6 @@ class Weapons(val ship: Starship) : ShipComponent {
 					// literal duct tape
 					dir = Vec3d(-dir.x, dir.y, dir.z)
 				}
-				//println("e: $eyeYaw, d: $adjDirYaw, c: ${type.cone} d-e${adjDirYaw - type.cone} d+e${adjDirYaw + type.cone}")
 
 				type.projectile.shoot(
 					ship,
@@ -73,6 +81,5 @@ class Weapons(val ship: Starship) : ShipComponent {
 				)
 			}
 		}
-		*/
 	}
 }

@@ -1,9 +1,13 @@
 package net.stellarica.core.commands
 
-import net.silkmc.silk.commands.command
+import com.mojang.brigadier.CommandDispatcher
+import net.minecraft.command.CommandBuildContext
+import net.minecraft.server.command.ServerCommandSource
+import net.stellarica.commands.command
+import net.stellarica.commands.register
 import net.stellarica.core.utils.toRichText
 
-fun registerMiscCommands() {
+fun registerMiscCommands(dispatcher: CommandDispatcher<ServerCommandSource>, context: CommandBuildContext) {
 	command("icanhasbukkit") {
 		runs {
 			source.sendSystemMessage(
@@ -16,7 +20,7 @@ fun registerMiscCommands() {
 				""".trimIndent().toRichText()
 			)
 		}
-	}
+	}.register(dispatcher, context)
 
 	command("reload") {
 		literal("confirm") {
@@ -39,5 +43,5 @@ fun registerMiscCommands() {
 					).toRichText()
 			)
 		}
-	}
+	}.register(dispatcher, context)
 }

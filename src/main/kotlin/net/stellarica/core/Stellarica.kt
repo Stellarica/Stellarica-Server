@@ -1,5 +1,6 @@
 package net.stellarica.core
 
+import com.mojang.brigadier.CommandDispatcher
 import eu.pb4.polymer.blocks.api.BlockModelType
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils
 import net.minecraft.block.Block
@@ -7,6 +8,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
+import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.util.Identifier
 import net.stellarica.core.blocks.InterfaceBlock
 import net.stellarica.core.blocks.ShipBlock
@@ -20,6 +22,7 @@ import net.stellarica.core.blocks.SimpleBlockItem
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.server.DedicatedServerModInitializer
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings
+import org.quiltmc.qsl.command.api.CommandRegistrationCallback
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings
 
 
@@ -85,7 +88,9 @@ class Stellarica : DedicatedServerModInitializer {
 		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "titanium_block")
 		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "tungsten_block")
 
-		registerMiscCommands()
+		CommandRegistrationCallback.EVENT.register( CommandRegistrationCallback{ dispatcher, context, _ ->
+			registerMiscCommands(dispatcher, context)
+		})
 	}
 
 	fun registerSimpleBlockItemPair(type: BlockModelType?, id: String?): Pair<Block, Item> {

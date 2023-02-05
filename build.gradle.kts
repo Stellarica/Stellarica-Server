@@ -34,8 +34,8 @@ dependencies {
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
 
-	modImplementation(libs.oxidizer)
-	include(libs.oxidizer)
+	modImplementation(libs.bundles.stellarica)
+	include(libs.bundles.stellarica)
 
 	modImplementation(libs.bundles.silk)
 	include(libs.bundles.silk)

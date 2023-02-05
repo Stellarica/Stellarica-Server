@@ -4,7 +4,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.Vec3d
 import net.stellarica.core.crafts.starships.ShipComponent
 import net.stellarica.core.crafts.starships.Starship
-import net.stellarica.core.multiblocks.OriginRelative
+import net.stellarica.core.utils.coordinates.OriginRelative
 import net.stellarica.core.utils.dot
 import net.stellarica.core.utils.toVec3d
 import kotlin.math.PI

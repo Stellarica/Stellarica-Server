@@ -1,4 +1,4 @@
-package net.stellarica.core.multiblocks
+package net.stellarica.core.utils.coordinates
 
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction

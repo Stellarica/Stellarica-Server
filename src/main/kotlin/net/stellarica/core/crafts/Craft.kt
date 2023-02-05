@@ -19,10 +19,10 @@ import net.minecraft.world.chunk.WorldChunk
 import net.stellarica.core.components.Components.Companion.MULTIBLOCKS
 import net.stellarica.core.mixin.BlockEntityMixin
 import net.stellarica.core.multiblocks.MultiblockInstance
-import net.stellarica.core.multiblocks.OriginRelative
+import net.stellarica.core.utils.coordinates.OriginRelative
 import net.stellarica.core.utils.asDegrees
 import net.stellarica.core.utils.rotate
-import net.stellarica.core.utils.rotateCoordinates
+import net.stellarica.core.utils.coordinates.rotateCoordinates
 import net.stellarica.core.utils.sendRichMessage
 import net.stellarica.core.utils.toBlockPos
 import net.stellarica.core.utils.toVec3d

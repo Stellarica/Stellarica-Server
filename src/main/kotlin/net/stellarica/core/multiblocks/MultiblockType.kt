@@ -5,6 +5,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
+import net.stellarica.core.utils.coordinates.OriginRelative
 
 data class MultiblockType(
 	val id: Identifier,

@@ -14,9 +14,9 @@ import net.stellarica.core.commands.registerMiscCommands
 import net.stellarica.core.crafts.starships.Starship
 import net.stellarica.core.multiblocks.MultiblockHandler
 import net.stellarica.core.multiblocks.MultiblockType
-import net.stellarica.core.multiblocks.OriginRelative
-import net.stellarica.core.utils.SimpleBlock
-import net.stellarica.core.utils.SimpleBlockItem
+import net.stellarica.core.utils.coordinates.OriginRelative
+import net.stellarica.core.blocks.SimpleBlock
+import net.stellarica.core.blocks.SimpleBlockItem
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.server.DedicatedServerModInitializer
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings

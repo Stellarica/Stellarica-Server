@@ -13,7 +13,7 @@ import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.decodeFromNbtElement
 import net.silkmc.silk.nbt.serialization.encodeToNbtElement
 import net.stellarica.core.Stellarica.Companion.identifier
-import net.stellarica.core.event.multiblocks.MultiblockUndetectEvent
+import net.stellarica.core.events.multiblocks.MultiblockUndetectEvent
 
 
 class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingComponent {

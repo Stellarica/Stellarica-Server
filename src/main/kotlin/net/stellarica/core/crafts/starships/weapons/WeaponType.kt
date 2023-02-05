@@ -5,7 +5,7 @@ import net.stellarica.core.Stellarica.Companion.identifier
 import net.stellarica.core.crafts.starships.weapons.projectiles.Projectile
 import net.stellarica.core.crafts.starships.weapons.projectiles.TestProjectile
 import net.stellarica.core.multiblocks.MultiblockHandler
-import net.stellarica.core.multiblocks.OriginRelative
+import net.stellarica.core.utils.coordinates.OriginRelative
 import kotlin.math.PI
 
 enum class WeaponType(

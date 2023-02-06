@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "quilt_loader": {
-    "group": "net.stellarica.core",
+    "group": "net.stellarica.server",
     "id": "stellarica",
     "version": "${version}",
     "metadata": {
@@ -12,8 +12,8 @@
       },
       "contact": {
         "homepage": "https://stellarica.net/",
-        "issues": "https://github.com/Stellarica/Stellarica-Core/issues",
-        "sources": "https://github.com/Stellarica/Stellarica-Core"
+        "issues": "https://github.com/Stellarica/Stellarica-Server/issues",
+        "sources": "https://github.com/Stellarica/Stellarica-Server"
       },
       "icon": "assets/stellarica/icon.png"
     },
@@ -21,11 +21,11 @@
     "entrypoints": {
       "server_init": {
         "adapter": "kotlin",
-        "value": "net.stellarica.core.Stellarica"
+        "value": "net.stellarica.server.Stellarica"
       },
       "cardinal-components": {
         "adapter": "kotlin",
-        "value": "net.stellarica.core.components.Components"
+        "value": "net.stellarica.server.components.Components"
       }
     },
     "depends": [

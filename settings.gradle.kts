@@ -1,4 +1,4 @@
-rootProject.name = "Stellarica-Core"
+rootProject.name = "Stellarica-Server"
 
 pluginManagement {
 	repositories {

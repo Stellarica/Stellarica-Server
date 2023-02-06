@@ -86,9 +86,8 @@ class Stellarica : DedicatedServerModInitializer {
 		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "titanium_block")
 		registerSimpleBlockItemPair(BlockModelType.FULL_BLOCK, "tungsten_block")
 
-		CommandRegistrationCallback.EVENT.register( CommandRegistrationCallback{ dispatcher, context, _ ->
-			registerMiscCommands(dispatcher, context)
-		})
+
+		registerMiscCommands()
 	}
 
 	fun registerSimpleBlockItemPair(type: BlockModelType?, id: String?): Pair<Block, Item> {

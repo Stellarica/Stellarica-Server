@@ -9,9 +9,9 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.WorldChunk
-import net.stellarica.nbt.serialization.Nbt
-import net.stellarica.nbt.serialization.decodeFromNbtElement
-import net.stellarica.nbt.serialization.encodeToNbtElement
+import net.silkmc.silk.nbt.serialization.Nbt
+import net.silkmc.silk.nbt.serialization.decodeFromNbtElement
+import net.silkmc.silk.nbt.serialization.encodeToNbtElement
 import net.stellarica.server.Stellarica.Companion.identifier
 import net.stellarica.server.events.multiblocks.MultiblockUndetectEvent
 

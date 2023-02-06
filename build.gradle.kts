@@ -31,6 +31,14 @@ dependencies {
 	modImplementation(libs.sgui)
 	include(libs.sgui)
 
+	modImplementation(libs.bundles.silk) {
+		exclude(group="net.fabricmc")
+	}
+	include(libs.bundles.silk) {
+		exclude(group="net.fabricmc")
+	}
+
+
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
 

@@ -10,8 +10,8 @@ import net.minecraft.world.RaycastContext
 import net.stellarica.core.Stellarica.Companion.ships
 import net.stellarica.core.crafts.Craft
 import net.stellarica.core.utils.toBlockPos
-import net.stellarica.oxidizer.event.Event
-import net.stellarica.oxidizer.event.server.StartServerTickEvent
+import net.stellarica.events.Event
+import net.stellarica.events.server.StartServerTickEvent
 
 abstract class Projectile {
 	abstract val range: Int

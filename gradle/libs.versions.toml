@@ -13,7 +13,7 @@ sgui = "1.2.1+1.19.3"
 cardinal = "5.1.0"
 silk = "1.9.5"
 
-oxidizer = "0.1.0-SNAPSHOT"
+stellarica_events = "0.1.0-SNAPSHOT"
 stellarica_commands = "0.1.0-SNAPSHOT"
 
 kotlin_coroutines = "1.6.4"
@@ -41,12 +41,11 @@ cardinal_chunk = { module = "dev.onyxstudios.cardinal-components-api:cardinal-co
 
 kotlin_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin_coroutines" }
 
-oxidizer = { module = "net.stellarica:oxidizer", version.ref = "oxidizer" }
-
 silk_core = { module = "net.silkmc:silk-core", version.ref = "silk" }
 silk_nbt = { module = "net.silkmc:silk-nbt", version.ref = "silk" }
 
 stellarica_commands = { module = "net.stellarica:commands", version.ref = "stellarica_commands" }
+stellarica_events = { module = "net.stellarica:events", version.ref = "stellarica_events" }
 
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]
@@ -54,7 +53,7 @@ quilted_fabric_api = ["quilted_fabric_api", "quilted_fabric_api_deprecated"]
 polymer = ["polymer_core", "polymer_resource_pack", "polymer_blocks", "polymer_autohost"]
 cardinal = ["cardinal_base", "cardinal_chunk"]
 silk = ["silk_core", "silk_nbt"]
-stellarica = ["oxidizer", "stellarica-commands"]
+stellarica = ["stellarica-events", "stellarica-commands"]
 
 [plugins]
 quilt_loom = { id = "org.quiltmc.loom", version = "1.0.+" }

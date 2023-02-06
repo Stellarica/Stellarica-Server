@@ -1,6 +1,6 @@
 plugins {
-	kotlin("jvm") version "1.8.0"
-	kotlin("plugin.serialization") version "1.8.0"
+	kotlin("jvm") version "1.8.10"
+	kotlin("plugin.serialization") version "1.8.10"
 	java
 	alias(libs.plugins.quilt.loom)
 	alias(libs.plugins.detekt)
@@ -36,9 +36,6 @@ dependencies {
 
 	modImplementation(libs.bundles.stellarica)
 	include(libs.bundles.stellarica)
-
-	modImplementation(libs.bundles.silk)
-	include(libs.bundles.silk)
 
 	implementation(libs.kotlin.coroutines)
 }

@@ -9,10 +9,12 @@ group = property("maven_group")!!
 version = property("version")!!
 
 repositories {
-	maven("https://maven.nucleoid.xyz") // polymer, stimuli
+	maven("https://maven.nucleoid.xyz") // polymer, stimuli, fantasy
 	maven("https://jitpack.io") // mixin extras
+	maven("https://oss.sonatype.org/content/repositories/snapshots") // fabric-permissions (needed by terra)
 	maven("https://ladysnake.jfrog.io/artifactory/mods") // cardinal components
-	maven("https://repo.stellarica.net/snapshots")
+	maven("https://repo.codemc.io/repository/maven-public/") // terra
+	maven("https://repo.stellarica.net/snapshots") // stellarica-events
 }
 
 dependencies {
@@ -41,6 +43,12 @@ dependencies {
 
 	modImplementation(libs.bundles.cardinal)
 	include(libs.bundles.cardinal)
+
+	modImplementation(libs.terra)
+	include(libs.terra)
+
+	modImplementation(libs.fantasy)
+	include(libs.fantasy)
 
 	modImplementation(libs.bundles.stellarica)
 	include(libs.bundles.stellarica)

@@ -18,6 +18,9 @@ stellarica_commands = "0.1.0-SNAPSHOT"
 
 kotlin_coroutines = "1.6.4"
 
+fantasy = "0.4.8+1.19.3"
+terra = "6.2.1-BETA+44550e8d8"
+
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 quilt_mappings = { module = "org.quiltmc:quilt-mappings", version.ref = "quilt_mappings" }
@@ -38,6 +41,9 @@ sgui = { module = "eu.pb4:sgui", version.ref = "sgui" }
 
 cardinal_base = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-base", version.ref = "cardinal" }
 cardinal_chunk = { module = "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk", version.ref = "cardinal" }
+
+fantasy = { module = "xyz.nucleoid:fantasy", version.ref = "fantasy"}
+terra = { module = "com.dfsek.terra:quilt", version.ref = "terra" }
 
 kotlin_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin_coroutines" }
 

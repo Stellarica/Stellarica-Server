@@ -7,7 +7,7 @@ quilt_loader = "0.18.1-beta.57"
 quilted_fabric_api = "5.0.0-alpha.9+0.72.0-1.19.3"
 quilt_kotlin = "1.1.0+kt.1.8.0+flk.1.9.0"
 
-polymer = "0.3.8+1.19.3"
+polymer = "0.3.9+1.19.3"
 placeholder = "2.0.0-pre.3+1.19.3"
 sgui = "1.2.1+1.19.3"
 cardinal = "5.1.0"
